@@ -225,7 +225,10 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
             If the user presses A, it sets the intake power to the final variable that
             holds the speed we want to collect at.
             If the user presses X, it sets the servo to Off.
-            And if the user presses B it reveres the servo to spit out the element.*/
+            And if the user presses B it reveres the servo to spit out the element.
+
+            reminder:Y additional button*/
+
 
             /* TECH TIP: If Else statements:
             We're using an else if statement on "gamepad1.x" and "gamepad1.b" just in case
@@ -281,8 +284,8 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
                     wrist.setPosition(WRIST_FOLDED_IN);
                 }
 
-                else if (gamepad1.dpad_right){
-                    /* This is the correct height to score SPECIMEN on the HIGH CHAMBER */
+                else if (gamepad1.dpad_right){                                                     /* this will be
+                      This is the correct height to score SPECIMEN on the HIGH CHAMBER               repurposed in gamepad2*/
                     armPosition = ARM_SCORE_SPECIMEN;
                     wrist.setPosition(WRIST_FOLDED_IN);
                 }
