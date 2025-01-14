@@ -156,9 +156,9 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
 
 
         /* Define and Initialize Motors */
-        leftDrive  = hardwareMap.get(DcMotor.class, "left_front_drive"); //the left drivetrain motor
-        rightDrive = hardwareMap.get(DcMotor.class, "right_front_drive"); //the right drivetrain motor
-        armMotor   = hardwareMap.get(DcMotor.class, "left_arm"); //the arm motor
+        leftDrive  = hardwareMap.get(DcMotor.class, "left_front_drive"); //the left drivetrain motor //2
+        rightDrive = hardwareMap.get(DcMotor.class, "right_front_drive"); //the right drivetrain motor //3
+        armMotor   = hardwareMap.get(DcMotor.class, "left_arm"); //the arm motor  //1
         extendMotor = hardwareMap.get(DcMotor.class, "extender"); // extender motor
 
 
@@ -195,8 +195,8 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
 
 
         /* Define and initialize servos.*/
-        intake = hardwareMap.get(CRServo.class, "intake");
-        wrist  = hardwareMap.get(Servo.class, "wrist");
+        intake = hardwareMap.get(CRServo.class, "intake"); //0
+        wrist  = hardwareMap.get(Servo.class, "wrist"); //1
 
         /* Make sure that the intake is off, and the wrist is folded in. */
         intake.setPower(INTAKE_OFF);
