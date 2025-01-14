@@ -154,6 +154,8 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
         double right;
         double forward;
         double rotate;
+        double side_left;
+        double side_right;
         double max;
 
 
@@ -260,6 +262,26 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
             }
 
 
+            //sideways movement implementation
+            side_left = gamepad1.left_stick_x * robotSpeed;
+            side_right = gamepad1.left_stick_x * robotSpeed;
+
+            left  = forward + rotate;
+            right = forward - rotate;
+
+            /* Normalize the values so neither exceed +/- 1.0 */
+            max = Math.max(Math.abs(left), Math.abs(right));
+            if (max > 1.0)
+            {
+                left /= max;
+                right /= max;
+            }
+
+            /* Set the motor power to the variables we've mixed and normalized */
+            leftDriveF.setPower(left);
+            leftDriveR.setPower(left);
+            rightDriveF.setPower(right);
+            rightDriveR.setPower(right);
 
             /* Here we handle the three buttons that have direct control of the intake speed.
             These control the continuous rotation servo that pulls elements into the robot,
