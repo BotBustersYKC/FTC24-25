@@ -9,7 +9,10 @@ public class test extends LinearOpMode
     @Override
     public void runOpMode()
     {
-        telemetry.addLine(String.valueOf(gamepad1.left_stick_x));
-        telemetry.update();
+        while (opModeIsActive())
+        {
+            telemetry.addLine(String.valueOf(gamepad1.left_stick_x));
+            telemetry.update();
+        }
     }
 }
