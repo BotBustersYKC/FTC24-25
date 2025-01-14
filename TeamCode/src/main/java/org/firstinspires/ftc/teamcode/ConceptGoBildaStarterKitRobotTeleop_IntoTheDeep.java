@@ -71,8 +71,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMode {
 
     /* Declare OpMode members. */
-    public DcMotor  leftDrive   = null; //the left drivetrain motor
-    public DcMotor  rightDrive  = null; //the right drivetrain motor
+    public DcMotor leftDriveF = null; //the left drivetrain motor
+    public DcMotor rightDriveF = null; //the right drivetrain motor
+    public DcMotor leftDriveR = null; //the left drivetrain motor
+    public DcMotor rightDriveR = null; //the right drivetrain motor
     public DcMotor  armMotor    = null; //the arm motor
     public DcMotor  extendMotor = null; // extender motor
     public CRServo  intake      = null; //the active intake servo
@@ -156,23 +158,30 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
 
 
         /* Define and Initialize Motors */
-        leftDrive  = hardwareMap.get(DcMotor.class, "left_front_drive"); //the left drivetrain motor //2
-        rightDrive = hardwareMap.get(DcMotor.class, "right_front_drive"); //the right drivetrain motor //3
+        leftDriveF = hardwareMap.get(DcMotor.class, "left_front_drive"); //the left drivetrain motor //2
+        leftDriveR = hardwareMap.get(DcMotor.class, "left_rear_drive");
+        rightDriveF = hardwareMap.get(DcMotor.class, "right_front_drive");//the right drivetrain motor //3
+        rightDriveR = hardwareMap.get(DcMotor.class, "right_rear_drive");
         armMotor   = hardwareMap.get(DcMotor.class, "left_arm"); //the arm motor  //1
-        extendMotor = hardwareMap.get(DcMotor.class, "extender"); // extender motor
+        extendMotor = hardwareMap.get(DcMotor.class, "extender"); // extender motor //0
 
 
         /* Most skid-steer/differential drive robots require reversing one motor to drive forward.
         for this robot, we reverse the right motor.*/
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftDriveF.setDirection(DcMotor.Direction.FORWARD);
+        leftDriveR.setDirection(DcMotor.Direction.FORWARD);
+        rightDriveF.setDirection(DcMotor.Direction.REVERSE);
+        rightDriveR.setDirection(DcMotor.Direction.REVERSE);
 
 
         /* Setting zeroPowerBehavior to BRAKE enables a "brake mode". This causes the motor to slow down
         much faster when it is coasting. This creates a much more controllable drivetrain. As the robot
         stops much quicker. */
-        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftDriveF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftDriveR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDriveF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDriveR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         extendMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -236,8 +245,10 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
             }
 
             /* Set the motor power to the variables we've mixed and normalized */
-            leftDrive.setPower(left);
-            rightDrive.setPower(right);
+            leftDriveF.setPower(left);
+            leftDriveR.setPower(left);
+            rightDriveF.setPower(right);
+            rightDriveR.setPower(right);
 
             if(gamepad1.a)
             {
