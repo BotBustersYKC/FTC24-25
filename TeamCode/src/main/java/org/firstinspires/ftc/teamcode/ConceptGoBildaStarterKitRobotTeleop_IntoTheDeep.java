@@ -150,12 +150,13 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
         /*
         These variables are private to the OpMode, and are used to control the drivetrain.
          */
-        double left;
-        double right;
+        double left_forward;
+        double left_rear;
+        double right_forward;
+        double right_rear;
         double forward;
         double rotate;
-        double side_left;
-        double side_right;
+        double side;
         double max;
 
 
@@ -228,6 +229,8 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
             forward = -gamepad1.left_stick_y * robotSpeed;
             rotate  = gamepad1.right_stick_x * robotSpeed;
 
+            //sideways implement
+            side = gamepad1.left_stick_x * robotSpeed;
 
             /* Here we "mix" the input channels together to find the power to apply to each motor.
             The both motors need to be set to a mix of how much you're retesting the robot move
@@ -235,31 +238,27 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
             the right and left motors need to move in opposite directions. So we will add rotate to
             forward for the left motor, and subtract rotate from forward for the right motor. */
 
-            left  = forward + rotate;
-            right = forward - rotate;
+
+            left_forward  = forward + rotate + side;
+            left_rear = forward + rotate - side;
+            right_forward = forward - rotate - side;
+            right_rear = forward - rotate + side;
 
             /* Normalize the values so neither exceed +/- 1.0 */
-            max = Math.max(Math.abs(left), Math.abs(right));
+            max = Math.max(Math.max(Math.abs(left_forward), Math.abs(left_rear)), Math.max(Math.abs(right_forward), Math.abs(right_rear)));
             if (max > 1.0)
             {
-                left /= max;
-                right /= max;
+                left_forward /= max;
+                left_rear /= max;
+                right_forward /= max;
+                right_rear /= max;
             }
 
             /* Set the motor power to the variables we've mixed and normalized */
-            leftDriveF.setPower(left);
-            leftDriveR.setPower(left);
-            rightDriveF.setPower(right);
-            rightDriveR.setPower(right);
-
-            //sideways movement implementation
-            side_left = -gamepad1.left_stick_x * robotSpeed;
-            side_right = gamepad1.left_stick_x * robotSpeed;
-
-            leftDriveF.setPower(side_right);
-            leftDriveR.setPower(side_left);
-            rightDriveF.setPower(side_left);
-            rightDriveR.setPower(side_right);
+            leftDriveF.setPower(left_forward);
+            leftDriveR.setPower(left_rear);
+            rightDriveF.setPower(right_forward);
+            rightDriveR.setPower(right_rear);
 
             if(gamepad1.a)
             {
@@ -269,8 +268,6 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
             {
                 robotSpeed = 1.0;
             }
-
-
 
 
             /* Here we handle the three buttons that have direct control of the intake speed.
