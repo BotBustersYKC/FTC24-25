@@ -161,12 +161,12 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
 
 
         /* Define and Initialize Motors */
-        leftDriveF = hardwareMap.get(DcMotor.class, "left_front_drive"); //the left drivetrain motor //2
-        leftDriveR = hardwareMap.get(DcMotor.class, "left_rear_drive");
-        rightDriveF = hardwareMap.get(DcMotor.class, "right_front_drive");//the right drivetrain motor //3
-        rightDriveR = hardwareMap.get(DcMotor.class, "right_rear_drive");
-        armMotor   = hardwareMap.get(DcMotor.class, "left_arm"); //the arm motor  //1
-        extendMotor = hardwareMap.get(DcMotor.class, "extender"); // extender motor //0
+        leftDriveF = hardwareMap.get(DcMotor.class, "left_front_drive"); //the left drivetrain motor //2C
+        leftDriveR = hardwareMap.get(DcMotor.class, "left_rear_drive");//1C
+        rightDriveF = hardwareMap.get(DcMotor.class, "right_front_drive");//the right drivetrain motor //4C
+        rightDriveR = hardwareMap.get(DcMotor.class, "right_rear_drive");//0C
+        armMotor   = hardwareMap.get(DcMotor.class, "left_arm"); //the arm motor  //1E
+        extendMotor = hardwareMap.get(DcMotor.class, "extender"); // extender motor //0E
 
 
         /* Most skid-steer/differential drive robots require reversing one motor to drive forward.
@@ -207,8 +207,8 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
 
 
         /* Define and initialize servos.*/
-        intake = hardwareMap.get(CRServo.class, "intake"); //0
-        wrist  = hardwareMap.get(Servo.class, "wrist"); //1
+        intake = hardwareMap.get(CRServo.class, "intake"); //0E
+        wrist  = hardwareMap.get(Servo.class, "wrist"); //1E
 
         /* Make sure that the intake is off, and the wrist is folded in. */
         intake.setPower(INTAKE_OFF);
