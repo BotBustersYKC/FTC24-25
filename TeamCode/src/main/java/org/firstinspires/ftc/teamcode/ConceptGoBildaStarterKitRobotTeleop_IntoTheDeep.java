@@ -49,14 +49,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMode {
 
     /* Declare OpMode members. */
-    public DcMotor leftDriveF = null; //the left drivetrain motor
+    public DcMotor leftDriveF  = null; //the left drivetrain motor
     public DcMotor rightDriveF = null; //the right drivetrain motor
-    public DcMotor leftDriveR = null; //the left drivetrain motor
+    public DcMotor leftDriveR  = null; //the left drivetrain motor
     public DcMotor rightDriveR = null; //the right drivetrain motor
-    public DcMotor  armMotor    = null; //the arm motor
-    public DcMotor  extendMotor = null; // extender motor
-    public CRServo  intake      = null; //the active intake servo
-    public Servo    wrist       = null; //the wrist servo
+    public DcMotor armMotor    = null; //the arm motor
+    public DcMotor extendMotor = null; // extender motor
+    public CRServo intake      = null; //the active intake servo
+    public Servo   wrist       = null; //the wrist servo
+    public Servo   folding     = null; //folding servo
 
 
     /* This constant is the number of encoder ticks for each degree of rotation of the arm.
@@ -111,6 +112,8 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
     final double WRIST_FOLDED_IN   = 0.8333;
     final double WRIST_FOLDED_OUT  = 0.5;
+    final double FOLDING_OUT = 1;
+    final double FOLDING_IN = 0;
 
     /* A number in degrees that the triggers can adjust the arm position by */
     final double FUDGE_FACTOR = 15 * ARM_TICKS_PER_DEGREE;
@@ -187,6 +190,7 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
         /* Define and initialize servos.*/
         intake = hardwareMap.get(CRServo.class, "intake"); //0E
         wrist  = hardwareMap.get(Servo.class, "wrist"); //1E
+        folding = hardwareMap.get(Servo.class, "folding"); //2E
 
         /* Make sure that the intake is off, and the wrist is folded in. */
         intake.setPower(INTAKE_OFF);
