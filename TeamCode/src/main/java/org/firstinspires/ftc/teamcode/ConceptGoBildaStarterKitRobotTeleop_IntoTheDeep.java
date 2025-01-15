@@ -141,7 +141,7 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
         /* Define and Initialize Motors */
         leftDriveF = hardwareMap.get(DcMotor.class, "left_front_drive"); //the left drivetrain motor //2C
         leftDriveR = hardwareMap.get(DcMotor.class, "left_rear_drive");//1C
-        rightDriveF = hardwareMap.get(DcMotor.class, "right_front_drive");//the right drivetrain motor //4C
+        rightDriveF = hardwareMap.get(DcMotor.class, "right_front_drive");//the right drivetrain motor //3C
         rightDriveR = hardwareMap.get(DcMotor.class, "right_rear_drive");//0C
         armMotor   = hardwareMap.get(DcMotor.class, "left_arm"); //the arm motor  //1E
         extendMotor = hardwareMap.get(DcMotor.class, "extender"); // extender motor //0E
@@ -149,10 +149,10 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
 
         /* Most skid-steer/differential drive robots require reversing one motor to drive forward.
         for this robot, we reverse the right motor.*/
-        leftDriveF.setDirection(DcMotor.Direction.FORWARD);
-        leftDriveR.setDirection(DcMotor.Direction.FORWARD);
-        rightDriveF.setDirection(DcMotor.Direction.REVERSE);
-        rightDriveR.setDirection(DcMotor.Direction.REVERSE);
+        leftDriveF.setDirection(DcMotor.Direction.REVERSE);
+        leftDriveR.setDirection(DcMotor.Direction.REVERSE);
+        rightDriveF.setDirection(DcMotor.Direction.FORWARD);
+        rightDriveR.setDirection(DcMotor.Direction.FORWARD);
 
 
         /* Setting zeroPowerBehavior to BRAKE enables a "brake mode". This causes the motor to slow down
