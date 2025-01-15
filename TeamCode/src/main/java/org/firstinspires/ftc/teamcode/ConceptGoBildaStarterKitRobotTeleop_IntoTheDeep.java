@@ -44,7 +44,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
  */
 
 
-@TeleOp(name="FTC Starter Kit Example Robot (INTO THE DEEP)", group="Robot")
+@TeleOp(name="main", group="Robot")
 //@Disabled
 public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMode {
 
@@ -149,10 +149,10 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
 
         /* Most skid-steer/differential drive robots require reversing one motor to drive forward.
         for this robot, we reverse the right motor.*/
-        leftDriveF.setDirection(DcMotor.Direction.REVERSE);
-        leftDriveR.setDirection(DcMotor.Direction.REVERSE);
-        rightDriveF.setDirection(DcMotor.Direction.FORWARD);
-        rightDriveR.setDirection(DcMotor.Direction.FORWARD);
+        leftDriveF.setDirection(DcMotor.Direction.FORWARD);
+        leftDriveR.setDirection(DcMotor.Direction.FORWARD);
+        rightDriveF.setDirection(DcMotor.Direction.REVERSE);
+        rightDriveR.setDirection(DcMotor.Direction.REVERSE);
 
 
         /* Setting zeroPowerBehavior to BRAKE enables a "brake mode". This causes the motor to slow down
@@ -204,11 +204,11 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
 
             /* Set the drive and turn variables to follow the joysticks on the gamepad.
             the joysticks decrease as you push them up. So reverse the Y axis. */
-            forward = -gamepad1.left_stick_y * robotSpeed;
+            forward = gamepad1.left_stick_y * robotSpeed;
             rotate  = gamepad1.right_stick_x * robotSpeed;
 
             //sideways implement
-            side = gamepad1.left_stick_x * robotSpeed;
+            side = -gamepad1.left_stick_x * robotSpeed;
 
             /* Here we "mix" the input channels together to find the power to apply to each motor.
             The both motors need to be set to a mix of how much you're retesting the robot move
@@ -242,11 +242,13 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
             {
                 robotSpeed = 0.25; // added "sensitivity/overflow mode"
                 telemetry.addData("Current robot speed:", robotSpeed);
+                telemetry.update();
             }
             else if (gamepad1.b)
             {
                 robotSpeed = 1.0;
                 telemetry.addData("Current robot speed:", robotSpeed);
+                telemetry.update();
             }
 
 
