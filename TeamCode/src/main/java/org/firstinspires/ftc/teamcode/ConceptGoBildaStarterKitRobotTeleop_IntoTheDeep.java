@@ -205,7 +205,7 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
             /* Set the drive and turn variables to follow the joysticks on the gamepad.
             the joysticks decrease as you push them up. So reverse the Y axis. */
             forward = gamepad1.left_stick_y * robotSpeed;
-            rotate  = gamepad1.right_stick_x * robotSpeed;
+            rotate  = -gamepad1.right_stick_x * robotSpeed;
 
             //sideways implement
             side = -gamepad1.left_stick_x * robotSpeed;
