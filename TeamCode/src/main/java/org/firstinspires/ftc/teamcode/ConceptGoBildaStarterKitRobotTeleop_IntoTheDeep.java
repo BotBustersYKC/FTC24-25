@@ -44,7 +44,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
  */
 
 
-@TeleOp(name="FTC Starter Kit Example Robot (INTO THE DEEP)", group="Robot")
+@TeleOp(name="main", group="Robot")
 //@Disabled
 public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMode {
 
@@ -139,12 +139,12 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
 
 
         /* Define and Initialize Motors */
-        leftDriveF = hardwareMap.get(DcMotor.class, "left_front_drive"); //the left drivetrain motor //2
-        leftDriveR = hardwareMap.get(DcMotor.class, "left_rear_drive");
-        rightDriveF = hardwareMap.get(DcMotor.class, "right_front_drive");//the right drivetrain motor //3
-        rightDriveR = hardwareMap.get(DcMotor.class, "right_rear_drive");
-        armMotor   = hardwareMap.get(DcMotor.class, "left_arm"); //the arm motor  //1
-        extendMotor = hardwareMap.get(DcMotor.class, "extender"); // extender motor //0
+        leftDriveF = hardwareMap.get(DcMotor.class, "left_front_drive"); //the left drivetrain motor //2C
+        leftDriveR = hardwareMap.get(DcMotor.class, "left_rear_drive");//1C
+        rightDriveF = hardwareMap.get(DcMotor.class, "right_front_drive");//the right drivetrain motor //3C
+        rightDriveR = hardwareMap.get(DcMotor.class, "right_rear_drive");//0C
+        armMotor   = hardwareMap.get(DcMotor.class, "left_arm"); //the arm motor  //1E
+        extendMotor = hardwareMap.get(DcMotor.class, "extender"); // extender motor //0E
 
 
         /* Most skid-steer/differential drive robots require reversing one motor to drive forward.
@@ -185,8 +185,8 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
 
 
         /* Define and initialize servos.*/
-        intake = hardwareMap.get(CRServo.class, "intake"); //0
-        wrist  = hardwareMap.get(Servo.class, "wrist"); //1
+        intake = hardwareMap.get(CRServo.class, "intake"); //0E
+        wrist  = hardwareMap.get(Servo.class, "wrist"); //1E
 
         /* Make sure that the intake is off, and the wrist is folded in. */
         intake.setPower(INTAKE_OFF);
@@ -204,11 +204,11 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
 
             /* Set the drive and turn variables to follow the joysticks on the gamepad.
             the joysticks decrease as you push them up. So reverse the Y axis. */
-            forward = -gamepad1.left_stick_y * robotSpeed;
-            rotate  = gamepad1.right_stick_x * robotSpeed;
+            forward = gamepad1.left_stick_y * robotSpeed;
+            rotate  = -gamepad1.right_stick_x * robotSpeed;
 
             //sideways implement
-            side = gamepad1.left_stick_x * robotSpeed;
+            side = -gamepad1.left_stick_x * robotSpeed;
 
             /* Here we "mix" the input channels together to find the power to apply to each motor.
             The both motors need to be set to a mix of how much you're retesting the robot move
@@ -240,7 +240,7 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
 
             if(gamepad1.a)
             {
-                robotSpeed = 0.25;                // added "sensitivity/overflow mode"
+                robotSpeed = 0.25; // added "sensitivity/overflow mode"
             }
             else if (gamepad1.b)
             {
@@ -406,6 +406,7 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
             /* send telemetry to the driver of the arm's current position and target position */
             telemetry.addData("armTarget: ", armMotor.getTargetPosition());
             telemetry.addData("arm Encoder: ", armMotor.getCurrentPosition());
+            telemetry.addData("Current robot speed:", robotSpeed);
             telemetry.update();
 
         }
