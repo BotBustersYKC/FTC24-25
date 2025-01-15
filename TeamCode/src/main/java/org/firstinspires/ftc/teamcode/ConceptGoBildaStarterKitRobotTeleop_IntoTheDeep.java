@@ -241,14 +241,10 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
             if(gamepad1.a)
             {
                 robotSpeed = 0.25; // added "sensitivity/overflow mode"
-                telemetry.addData("Current robot speed:", robotSpeed);
-                telemetry.update();
             }
             else if (gamepad1.b)
             {
                 robotSpeed = 1.0;
-                telemetry.addData("Current robot speed:", robotSpeed);
-                telemetry.update();
             }
 
 
@@ -410,6 +406,7 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
             /* send telemetry to the driver of the arm's current position and target position */
             telemetry.addData("armTarget: ", armMotor.getTargetPosition());
             telemetry.addData("arm Encoder: ", armMotor.getCurrentPosition());
+            telemetry.addData("Current robot speed:", robotSpeed);
             telemetry.update();
 
         }
