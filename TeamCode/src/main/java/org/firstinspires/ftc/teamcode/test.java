@@ -106,15 +106,15 @@ public class test extends LinearOpMode
             }
             else if (gamepad1.dpad_down)
             {
-                intake_pow = .1;
+                intake_pow = .5;
             }
             else if (gamepad1.dpad_left)
             {
-                wrist_pow = .1;
+                wrist_pow = .3;
             }
             else if (gamepad1.left_bumper)
             {
-                fold = .1;
+                fold = .2;
             }
 
             armMotor.setTargetPosition((int) (arm*gamepad1.left_stick_x)); // removed velocity, to counteract torque trade-offs
