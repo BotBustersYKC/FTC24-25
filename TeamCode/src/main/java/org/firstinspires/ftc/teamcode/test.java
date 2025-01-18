@@ -29,6 +29,19 @@ public class test extends LinearOpMode
     double wrist_pow = 0;
     double fold = 0;
 
+    final double ARM_TICKS_PER_DEGREE =
+            28 // number of encoder ticks per rotation of the bare motor
+                    * 250047.0 / 4913.0 // This is the exact gear ratio of the 50.9:1 Yellow Jacket gearbox
+                    * 100.0 / 20.0 // This is the external gear reduction, a 20T pinion gear that drives a 100T hub-mount gear
+                    * 1/360.0; // we want ticks per degree, not per rotation
+
+    /** @noinspection unused*/
+    final double EXTEND_TICKS_PER_DEGREE =
+            28 //encoder ticks
+                    *250047.0/4913.0 // exact ratio
+                    *1/360.0; // ticks per degree
+
+
     @Override
 
     public void runOpMode()
@@ -50,11 +63,10 @@ public class test extends LinearOpMode
             leftDriveR.setPower(gamepad1.left_stick_x*leftR);
             rightDriveF.setPower(gamepad1.left_stick_x*rightF);
             rightDriveR.setPower(gamepad1.left_stick_x*rightR);
-            armMotor.setPower(gamepad1.left_stick_x*arm);
-            extendMotor.setPower(gamepad1.left_stick_x*extend);
             intake.setPower(gamepad1.left_stick_x*intake_pow);
             wrist.setPosition(gamepad1.left_stick_x*wrist_pow);
             folding.setPosition(gamepad1.left_stick_x*fold);
+
 
             if (gamepad1.right_bumper)
             {
@@ -86,11 +98,11 @@ public class test extends LinearOpMode
             }
             else  if (gamepad1.dpad_up)
             {
-                arm = .1;
+                arm = 10*ARM_TICKS_PER_DEGREE;
             }
             else if (gamepad1.dpad_right)
             {
-                extend = .1;
+                extend = 10*EXTEND_TICKS_PER_DEGREE;
             }
             else if (gamepad1.dpad_down)
             {
@@ -104,6 +116,11 @@ public class test extends LinearOpMode
             {
                 fold = .1;
             }
+
+            armMotor.setTargetPosition((int) (arm*gamepad1.left_stick_x)); // removed velocity, to counteract torque trade-offs
+            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            extendMotor.setTargetPosition((int) (extend*gamepad1.left_stick_x));
+            extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             telemetry.addLine(String.valueOf(gamepad1.left_stick_x));
             telemetry.update();
