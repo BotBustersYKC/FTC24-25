@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
-@TeleOp(name="test", group="Robot")
+@TeleOp(name="debug", group="Robot")
 public class test extends LinearOpMode
 {
     public DcMotor leftDriveF  = null; //the left drivetrain motor
