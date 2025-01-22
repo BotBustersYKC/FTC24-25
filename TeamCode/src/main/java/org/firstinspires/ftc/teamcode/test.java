@@ -24,7 +24,9 @@ public class test extends LinearOpMode
     double leftR = 0;
     double rightR = 0;
     double arm = 0;
+    double arm_pos = 0;
     double extend = 0;
+    double extend_pos = 0;
     double intake_pow = 0;
     double wrist_pow = 0;
     double fold = 0;
@@ -35,7 +37,6 @@ public class test extends LinearOpMode
                     * 100.0 / 20.0 // This is the external gear reduction, a 20T pinion gear that drives a 100T hub-mount gear
                     * 1/360.0; // we want ticks per degree, not per rotation
 
-    /** @noinspection unused*/
     final double EXTEND_TICKS_PER_DEGREE =
             28 //encoder ticks
                     *250047.0/4913.0 // exact ratio
@@ -56,8 +57,17 @@ public class test extends LinearOpMode
         wrist  = hardwareMap.get(Servo .class, "wrist"); //1E
         folding = hardwareMap.get(Servo.class, "folding"); //2E
 
+        armMotor.setTargetPosition(0);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        extendMotor.setTargetPosition(0);
+        extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        extendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         waitForStart();
         while (opModeIsActive())
+
         {
             leftDriveF.setPower(gamepad1.left_stick_x*leftF);
             leftDriveR.setPower(gamepad1.left_stick_x*leftR);
@@ -67,6 +77,8 @@ public class test extends LinearOpMode
             wrist.setPosition(gamepad1.left_stick_x*wrist_pow);
             folding.setPosition(gamepad1.left_stick_x*fold);
 
+            arm_pos=armMotor.getCurrentPosition();
+            extend_pos=extendMotor.getCurrentPosition();
 
             if (gamepad1.right_bumper)
             {
@@ -98,11 +110,11 @@ public class test extends LinearOpMode
             }
             else  if (gamepad1.dpad_up)
             {
-                arm = 10*ARM_TICKS_PER_DEGREE;
+                arm = 10 * ARM_TICKS_PER_DEGREE;
             }
             else if (gamepad1.dpad_right)
             {
-                extend = 10*EXTEND_TICKS_PER_DEGREE;
+                extend = 10 * EXTEND_TICKS_PER_DEGREE;
             }
             else if (gamepad1.dpad_down)
             {
@@ -116,10 +128,10 @@ public class test extends LinearOpMode
             {
                 fold = .2;
             }
-
-            armMotor.setTargetPosition((int) (arm*gamepad1.left_stick_x)); // removed velocity, to counteract torque trade-offs
+            armMotor.setTargetPosition((int) (arm_pos+arm*gamepad1.left_stick_x)); // removed velocity, to counteract torque trade-offs
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            extendMotor.setTargetPosition((int) (extend*gamepad1.left_stick_x));
+
+            extendMotor.setTargetPosition((int) (extend_pos + extend*gamepad1.left_stick_x));
             extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             telemetry.addLine(String.valueOf(gamepad1.left_stick_x));
