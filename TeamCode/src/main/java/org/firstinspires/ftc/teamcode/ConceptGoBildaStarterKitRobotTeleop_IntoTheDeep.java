@@ -294,64 +294,65 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
                 armPosition = ARM_COLLECT;
                 wrist.setPosition(WRIST_FOLDED_OUT);
                 intake.setPower(INTAKE_COLLECT);
-                }
+            }
 
-                else if (gamepad2.left_bumper)
-                {
-                    /* This is about 20° up from the collecting position to clear the barrier
-                    Note here that we don't set the wrist position or the intake power when we
-                    select this "mode", this means that the intake and wrist will continue what
-                    they were doing before we clicked left bumper. */
-                    armPosition = ARM_CLEAR_BARRIER;
-                }
+            else if (gamepad2.left_bumper)
+            {
+                /* This is about 20° up from the collecting position to clear the barrier
+                Note here that we don't set the wrist position or the intake power when we
+                select this "mode", this means that the intake and wrist will continue what
+                they were doing before we clicked left bumper. */
+                armPosition = ARM_CLEAR_BARRIER;
+            }
 
-                else if (gamepad2.y)
-                {
-                    /* This is the correct height to score the sample in the LOW BASKET */
-                    armPosition = ARM_SCORE_SAMPLE_IN_LOW; // this will be changed to high basket position, after some testing
+            else if (gamepad2.y)
+            {
+                /* This is the correct height to score the sample in the LOW BASKET */
+                armPosition = ARM_SCORE_SAMPLE_IN_LOW; // this will be changed to high basket position, after some testing
 
-                }
+            }
 
-                else if (gamepad2.dpad_left)
-                {
-                    /* This turns off the intake, folds in the wrist, and moves the arm
-                    back to folded inside the robot. This is also the starting configuration */
-                    armPosition = ARM_COLLAPSED_INTO_ROBOT;
-                    intake.setPower(INTAKE_OFF);
-                    wrist.setPosition(WRIST_FOLDED_IN);
-                }
+            else if (gamepad2.dpad_left)
+            {
+                /* This turns off the intake, folds in the wrist, and moves the arm
+                back to folded inside the robot. This is also the starting configuration */
+                armPosition = ARM_COLLAPSED_INTO_ROBOT;
+                intake.setPower(INTAKE_OFF);
+                wrist.setPosition(WRIST_FOLDED_IN);
+            }
 
-                else if (gamepad2.dpad_right)
-                {
-                    /* This is the correct height to score SPECIMEN on the HIGH CHAMBER */
-                    armPosition = ARM_SCORE_SPECIMEN;
-                    wrist.setPosition(WRIST_FOLDED_IN);
-                }
+            else if (gamepad2.dpad_right)
+            {
+                /* This is the correct height to score SPECIMEN on the HIGH CHAMBER */
+                armPosition = ARM_SCORE_SPECIMEN;
+                wrist.setPosition(WRIST_FOLDED_IN);
+            }
 
-                else if (gamepad2.dpad_up)
-                {
-                    /* This sets the arm to vertical to hook onto the LOW RUNG for hanging */
-                    armPosition = ARM_ATTACH_HANGING_HOOK;
-                    intake.setPower(INTAKE_OFF);
-                    wrist.setPosition(WRIST_FOLDED_IN);
-                }
+            else if (gamepad2.dpad_up)
+            {
+                /* This sets the arm to vertical to hook onto the LOW RUNG for hanging */
+                armPosition = ARM_ATTACH_HANGING_HOOK;
+                intake.setPower(INTAKE_OFF);
+                wrist.setPosition(WRIST_FOLDED_IN);
+            }
 
-                else if (gamepad2.dpad_down)
-                {
-                    /* this moves the arm down to lift the robot up once it has been hooked */
-                    armPosition = ARM_WINCH_ROBOT;
-                    intake.setPower(INTAKE_OFF);
-                    wrist.setPosition(WRIST_FOLDED_IN);
+            else if (gamepad2.dpad_down)
+            {
+                /* this moves the arm down to lift the robot up once it has been hooked */
+                armPosition = ARM_WINCH_ROBOT;
+                intake.setPower(INTAKE_OFF);
+                wrist.setPosition(WRIST_FOLDED_IN);
             }
 
             // adding extending functionality to the joysticks of gamepad2
             if (gamepad2.left_stick_button)
             {
-                    extendPosition = EXTENDED_ARM;
-                }
-                else if (gamepad2.right_stick_button)
-                {
-                    extendPosition = RETRACTED_ARM;
+                extendPosition = EXTENDED_ARM;
+            }
+
+            if (gamepad2.right_stick_button)
+            {
+                extendPosition = RETRACTED_ARM;
             }
 
 
