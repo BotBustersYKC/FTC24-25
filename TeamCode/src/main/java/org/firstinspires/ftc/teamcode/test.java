@@ -96,10 +96,6 @@ public class test extends LinearOpMode
             {
                 rightR = .1;
             }
-            else  if (gamepad1.dpad_up)
-            {
-                arm = 10*ARM_TICKS_PER_DEGREE;
-            }
             else if (gamepad1.dpad_right)
             {
                 extend = 10*EXTEND_TICKS_PER_DEGREE;
@@ -117,12 +113,20 @@ public class test extends LinearOpMode
                 fold = .2;
             }
 
-            armMotor.setTargetPosition((int) (arm*gamepad1.left_stick_x)); // removed velocity, to counteract torque trade-offs
+            if (gamepad1.dpad_up)
+            {
+                arm = 70*ARM_TICKS_PER_DEGREE;
+            }
+
+            armMotor.setTargetPosition((int) (arm)); // removed velocity, to counteract torque trade-offs
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            extendMotor.setTargetPosition((int) (extend*gamepad1.left_stick_x));
-            extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //extendMotor.setTargetPosition((int) (extend*gamepad1.left_stick_x));
+            //extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             telemetry.addLine(String.valueOf(gamepad1.left_stick_x));
+            telemetry.addData("armTarget: ", armMotor.getTargetPosition());
+            telemetry.addData("arm Encoder: ", armMotor.getCurrentPosition());
+
             telemetry.update();
         }
     }
