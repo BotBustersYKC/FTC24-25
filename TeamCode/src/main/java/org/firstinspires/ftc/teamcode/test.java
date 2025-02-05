@@ -124,7 +124,7 @@ public class test extends LinearOpMode
             }
 
             armMotor.setTargetPosition((int) (arm*gamepad1.left_stick_x+pos));
-            ((DcMotorEx) armMotor).setVelocity(800);
+            ((DcMotorEx) armMotor).setVelocity(800);                                          //experiment here
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             extendMotor.setTargetPosition((int) (extend*gamepad1.left_stick_x+epos));
