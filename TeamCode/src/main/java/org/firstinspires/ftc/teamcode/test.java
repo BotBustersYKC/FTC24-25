@@ -3,6 +3,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
@@ -28,6 +29,8 @@ public class test extends LinearOpMode
     double intake_pow = 0;
     double wrist_pow = 0;
     double fold = 0;
+    double pos = 0;
+    double epos = 0;
 
     final double ARM_TICKS_PER_DEGREE =
             28 // number of encoder ticks per rotation of the bare motor
@@ -67,6 +70,8 @@ public class test extends LinearOpMode
             wrist.setPosition(gamepad1.left_stick_x*wrist_pow);
             folding.setPosition(gamepad1.left_stick_x*fold);
 
+            pos = armMotor.getCurrentPosition();
+            epos = extendMotor.getCurrentPosition();
 
             if (gamepad1.right_bumper)
             {
@@ -115,17 +120,21 @@ public class test extends LinearOpMode
 
             if (gamepad1.dpad_up)
             {
-                arm = 70*ARM_TICKS_PER_DEGREE;
+                arm = 10*ARM_TICKS_PER_DEGREE;
             }
 
-            armMotor.setTargetPosition((int) (arm)); // removed velocity, to counteract torque trade-offs
+            armMotor.setTargetPosition((int) (arm*gamepad1.left_stick_x+pos));
+            ((DcMotorEx) armMotor).setVelocity(800);// removed velocity, to counteract torque trade-offs
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            //extendMotor.setTargetPosition((int) (extend*gamepad1.left_stick_x));
-            //extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            extendMotor.setTargetPosition((int) (extend*gamepad1.left_stick_x+epos));
+            ((DcMotorEx) extendMotor).setVelocity(2100);// removed velocity, to counteract torque trade-offs
+            extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             telemetry.addLine(String.valueOf(gamepad1.left_stick_x));
             telemetry.addData("armTarget: ", armMotor.getTargetPosition());
             telemetry.addData("arm Encoder: ", armMotor.getCurrentPosition());
+            telemetry.addData("Current pos:", (int)(pos/ARM_TICKS_PER_DEGREE));
 
             telemetry.update();
         }
