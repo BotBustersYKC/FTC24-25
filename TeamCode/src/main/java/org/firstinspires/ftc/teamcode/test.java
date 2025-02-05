@@ -124,11 +124,11 @@ public class test extends LinearOpMode
             }
 
             armMotor.setTargetPosition((int) (arm*gamepad1.left_stick_x+pos));
-            ((DcMotorEx) armMotor).setVelocity(800);// removed velocity, to counteract torque trade-offs
+            ((DcMotorEx) armMotor).setVelocity(800);
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             extendMotor.setTargetPosition((int) (extend*gamepad1.left_stick_x+epos));
-            ((DcMotorEx) extendMotor).setVelocity(2100);// removed velocity, to counteract torque trade-offs
+            ((DcMotorEx) extendMotor).setVelocity(2100);
             extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             telemetry.addLine(String.valueOf(gamepad1.left_stick_x));
