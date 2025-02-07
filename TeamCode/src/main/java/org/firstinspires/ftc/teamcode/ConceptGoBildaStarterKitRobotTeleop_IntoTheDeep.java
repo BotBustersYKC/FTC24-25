@@ -44,6 +44,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
  */
 
 
+/** @noinspection CommentedOutCode*/
 @TeleOp(name="main", group="Robot")
 //@Disabled
 public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMode {
@@ -362,7 +363,7 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
             /* Here we set the target position of our arm to match the variable that was selected
             by the driver.
             We also set the target velocity (speed) the motor runs at, and use setMode to run it.*/
-            armMotor.setTargetPosition((int) (armPosition + armPositionFudgeFactor)); // removed velocity, to counteract torque trade-offs
+            armMotor.setTargetPosition((int) (armPosition + armPositionFudgeFactor));
             ((DcMotorEx) armMotor).setVelocity(2100);
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -378,6 +379,7 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
             }
 
             extendMotor.setTargetPosition((int)extendPosition);
+            ((DcMotorEx) extendMotor).setVelocity(2100);
             extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             /* TECH TIP: Encoders, integers, and doubles
