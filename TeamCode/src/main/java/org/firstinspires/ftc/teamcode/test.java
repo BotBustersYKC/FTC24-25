@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import static java.lang.Math.cos;                 //less clutter to deal with only importing necessary functions
+import static java.lang.Math.PI;
 
 @TeleOp(name="debug", group="Robot")
 public class test extends LinearOpMode
@@ -31,6 +33,7 @@ public class test extends LinearOpMode
     double fold = 0;
     double pos = 0;
     double epos = 0;
+    double func = 0;
 
     final double ARM_TICKS_PER_DEGREE =
             28 // number of encoder ticks per rotation of the bare motor
@@ -44,6 +47,9 @@ public class test extends LinearOpMode
                     *250047.0/4913.0 // exact ratio
                     *1/360.0; // ticks per degree
 
+
+    double read_pos = pos/ARM_TICKS_PER_DEGREE;
+    double read_extender_pos = epos/EXTEND_TICKS_PER_DEGREE;
 
     @Override
 
@@ -59,6 +65,8 @@ public class test extends LinearOpMode
         wrist  = hardwareMap.get(Servo .class, "wrist"); //1E
         folding = hardwareMap.get(Servo.class, "folding"); //2E
 
+        func = 1100*cos(PI*read_pos/90)+1900;
+
         waitForStart();
         while (opModeIsActive())
         {
@@ -70,8 +78,7 @@ public class test extends LinearOpMode
             wrist.setPosition(gamepad1.left_stick_x*wrist_pow);
             folding.setPosition(gamepad1.left_stick_x*fold);
 
-            pos = armMotor.getCurrentPosition();
-            epos = extendMotor.getCurrentPosition();
+
 
             if (gamepad1.right_bumper)
             {
@@ -123,8 +130,42 @@ public class test extends LinearOpMode
                 arm = 10*ARM_TICKS_PER_DEGREE;
             }
 
+
+            pos = armMotor.getCurrentPosition();
+            epos = extendMotor.getCurrentPosition();
+
+            read_pos = pos/ARM_TICKS_PER_DEGREE;
+            read_extender_pos = epos/EXTEND_TICKS_PER_DEGREE;
+
+
+            if (read_pos < 20)
+            {
+                armMotor.setTargetPosition((int) (20*ARM_TICKS_PER_DEGREE));
+                ((DcMotorEx) armMotor).setVelocity(800);                                          //experiment here
+                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+            if (read_pos > 90 && read_extender_pos > 30)
+            {
+                armMotor.setTargetPosition((int) (90*ARM_TICKS_PER_DEGREE));
+                ((DcMotorEx) armMotor).setVelocity(800);                                          //experiment here
+                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+
             armMotor.setTargetPosition((int) (arm*gamepad1.left_stick_x+pos));
-            ((DcMotorEx) armMotor).setVelocity(800);                                          //experiment here
+
+
+            if (read_pos < 90 && read_pos >= 0)
+            {
+                ((DcMotorEx) armMotor).setVelocity((int) func);                                          //experiment here
+            }
+
+            if (read_pos >= 90)
+            {
+                ((DcMotorEx) armMotor).setVelocity(800);
+            }
+
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             extendMotor.setTargetPosition((int) (extend*gamepad1.left_stick_x+epos));
@@ -134,7 +175,18 @@ public class test extends LinearOpMode
             telemetry.addLine(String.valueOf(gamepad1.left_stick_x));
             telemetry.addData("armTarget: ", armMotor.getTargetPosition());
             telemetry.addData("arm Encoder: ", armMotor.getCurrentPosition());
-            telemetry.addData("Current pos:", (int)(pos/ARM_TICKS_PER_DEGREE));
+            telemetry.addData("Current Arm pos:", (int)read_pos);
+            telemetry.addData("Current Extender pos:", (int)read_extender_pos);
+
+            telemetry.addData("Left Rear", leftR);
+            telemetry.addData("Left Front", leftF);
+            telemetry.addData("Right Rear", rightR);
+            telemetry.addData("Right Front", rightF);
+            telemetry.addData("Arm", arm);
+            telemetry.addData("Extender", extend);
+            telemetry.addData("Intake Power", intake_pow);
+            telemetry.addData("Wrist Power", wrist_pow);
+            telemetry.addData("Fold position", fold);
 
             telemetry.update();
         }
