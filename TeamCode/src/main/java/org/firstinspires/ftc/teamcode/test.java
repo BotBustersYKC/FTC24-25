@@ -156,7 +156,7 @@ public class test extends LinearOpMode
             armMotor.setTargetPosition((int) (arm*gamepad1.left_stick_x+pos));
 
 
-            if (read_pos < 90 && read_pos >= 0)
+            if (read_pos < 90)
             {
                 ((DcMotorEx) armMotor).setVelocity((int) func);                                          //experiment here
             }
