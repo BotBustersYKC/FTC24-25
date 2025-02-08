@@ -103,7 +103,7 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
 
     // These constants will be used for extending the arm after some fine-tuning
     final double RETRACTED_ARM = 0;
-    final double EXTENDED_ARM = 100 * EXTEND_TICKS_PER_DEGREE; // experimental value TBD
+    final double EXTENDED_ARM = 3000 * EXTEND_TICKS_PER_DEGREE; // experimental value TBD
 
     /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
     final double INTAKE_COLLECT    = -1.0;
