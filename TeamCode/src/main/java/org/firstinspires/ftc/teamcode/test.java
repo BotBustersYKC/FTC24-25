@@ -63,8 +63,8 @@ public class test extends LinearOpMode
         rightDriveR = hardwareMap.get(DcMotor.class, "right_rear_drive");//0C
         armMotor   = hardwareMap.get(DcMotor.class, "left_arm"); //the arm motor  //1E
         extendMotor = hardwareMap.get(DcMotor.class, "extender"); // extender motor //0E
-        intake = hardwareMap.get(CRServo .class, "intake"); //0E
-        wrist  = hardwareMap.get(Servo .class, "wrist"); //1E
+        intake = hardwareMap.get(CRServo.class, "intake"); //0E
+        wrist  = hardwareMap.get(Servo.class, "wrist"); //1E
         folding = hardwareMap.get(Servo.class, "folding"); //2E
 
         func = 1100*cos(PI*read_pos/90)+1900;
@@ -127,6 +127,7 @@ public class test extends LinearOpMode
             else if (gamepad1.dpad_down)
             {
                 intake_pow = .5;
+                intake.setPower(intake_pow);
             }
             else if (gamepad1.dpad_left)
             {
