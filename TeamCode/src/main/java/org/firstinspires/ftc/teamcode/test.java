@@ -161,13 +161,6 @@ public class test extends LinearOpMode
             read_extender_pos = epos/EXTEND_TICKS_PER_DEGREE;
 
 
-            if (read_pos < 20)
-            {
-                armMotor.setTargetPosition((int) (20*ARM_TICKS_PER_DEGREE));
-                ((DcMotorEx) armMotor).setVelocity(800);                                          //experiment here
-                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-
             if (read_pos > 115 && read_extender_pos > 1500)
             {
                 armMotor.setTargetPosition((int) (115*ARM_TICKS_PER_DEGREE));
