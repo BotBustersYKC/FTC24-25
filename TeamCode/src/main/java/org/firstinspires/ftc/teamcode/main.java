@@ -50,7 +50,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 /** @noinspection CommentedOutCode*/
 @TeleOp(name="main", group="Robot")
 //@Disabled
-public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMode {
+public class main extends LinearOpMode {
 
     /* Declare OpMode members. */
     public DcMotor leftDriveF  = null; //the left drivetrain motor
