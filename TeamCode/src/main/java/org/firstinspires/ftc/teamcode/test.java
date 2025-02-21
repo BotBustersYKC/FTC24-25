@@ -122,7 +122,7 @@ public class test extends LinearOpMode
             }
             else if (gamepad1.dpad_right)
             {
-                extend = 10*EXTEND_TICKS_PER_DEGREE;
+                extend = 2000 *EXTEND_TICKS_PER_DEGREE;
             }
             else if (gamepad1.dpad_down)
             {
@@ -142,6 +142,7 @@ public class test extends LinearOpMode
             {
                 arm = 1*ARM_TICKS_PER_DEGREE;
             }
+
 
             pos += arm*gamepad1.left_stick_x;
             read_set_pos = pos/ARM_TICKS_PER_DEGREE;
@@ -187,7 +188,7 @@ public class test extends LinearOpMode
 
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            extendMotor.setTargetPosition((int) (extend*gamepad1.right_stick_x+epos));
+            extendMotor.setTargetPosition((int) (extend));
             ((DcMotorEx) extendMotor).setVelocity(2100);
             extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
