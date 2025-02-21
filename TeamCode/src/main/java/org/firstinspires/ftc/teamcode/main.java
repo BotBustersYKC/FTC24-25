@@ -440,8 +440,8 @@ public class main extends LinearOpMode {
 
 
             /* send telemetry to the driver of the arm's current position and target position */
-            telemetry.addData("armTarget: ", armMotor.getTargetPosition());
-            telemetry.addData("arm Encoder: ", armMotor.getCurrentPosition());
+            telemetry.addData("armTarget degrees: ", armMotor.getTargetPosition()/ARM_TICKS_PER_DEGREE);
+            telemetry.addData("arm Encoder degrees: ", armMotor.getCurrentPosition()/ARM_TICKS_PER_DEGREE);
             telemetry.addData("Current robot speed:", robotSpeed);
             telemetry.update();
 
