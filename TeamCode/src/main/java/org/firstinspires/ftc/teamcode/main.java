@@ -129,6 +129,7 @@ public class main extends LinearOpMode {
     /** @noinspection ConstantValue*/
     double extendPosition = (int)RETRACTED_ARM;
     double robotSpeed = 1.0; // this variable will only have values 1 and 1/4
+    String robotSpeed_text = "Fast";
     double read_pos;
     double func;
     double read_extender_pos;
@@ -252,10 +253,12 @@ public class main extends LinearOpMode {
             if(gamepad1.a)
             {
                 robotSpeed = 0.25; // added "sensitivity/overflow mode"
+                robotSpeed_text = "Slow";
             }
             else if (gamepad1.b)
             {
                 robotSpeed = 1.0;
+                robotSpeed_text = "Fast";
             }
 
 
@@ -442,7 +445,7 @@ public class main extends LinearOpMode {
             /* send telemetry to the driver of the arm's current position and target position */
             telemetry.addData("armTarget degrees: ", armMotor.getTargetPosition()/ARM_TICKS_PER_DEGREE);
             telemetry.addData("arm Encoder degrees: ", armMotor.getCurrentPosition()/ARM_TICKS_PER_DEGREE);
-            telemetry.addData("Current robot speed:", robotSpeed);
+            telemetry.addData("Current robot speed:", robotSpeed_text);
             telemetry.update();
 
         }
