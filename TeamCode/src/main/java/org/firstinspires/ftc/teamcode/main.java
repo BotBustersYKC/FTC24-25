@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import static java.lang.Math.PI;
+import static java.lang.Math.cos;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -22,7 +25,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
  * mecanum or omnidirectional chassis.
  *
  * The drive wheels are 96mm diameter traction (Rhino) or omni wheels.
- * They are driven by 2x 5203-2402-0019 312RPM Yellow Jacket Planetary Gearmotors.
+ * They are driven by 2x 5203-2402-0019 312RPM Yellow Jacket Planetary Gear-motors.
  *
  * This robot's main scoring mechanism includes an arm powered by a motor, a "wrist" driven
  * by a servo, and an intake driven by a continuous rotation servo.
@@ -44,9 +47,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
  */
 
 
+/** @noinspection CommentedOutCode*/
 @TeleOp(name="main", group="Robot")
 //@Disabled
-public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMode {
+public class main extends LinearOpMode {
 
     /* Declare OpMode members. */
     public DcMotor leftDriveF  = null; //the left drivetrain motor
@@ -58,6 +62,7 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
     public CRServo intake      = null; //the active intake servo
     public Servo   wrist       = null; //the wrist servo
     public Servo   folding     = null; //folding servo
+    public Servo   rotate       = null; // rotating servo arm
 
 
     /* This constant is the number of encoder ticks for each degree of rotation of the arm.
@@ -102,7 +107,7 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
 
     // These constants will be used for extending the arm after some fine-tuning
     final double RETRACTED_ARM = 0;
-    final double EXTENDED_ARM = 100 * EXTEND_TICKS_PER_DEGREE; // experimental value TBD
+    final double EXTENDED_ARM = 3000 * EXTEND_TICKS_PER_DEGREE; // experimental value TBD
 
     /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
     final double INTAKE_COLLECT    = -1.0;
@@ -112,8 +117,8 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
     final double WRIST_FOLDED_IN   = 0.8333;
     final double WRIST_FOLDED_OUT  = 0.5;
-    final double FOLDING_OUT = 1;
-    final double FOLDING_IN = 0;
+    //final double FOLDING_OUT = 1;
+    //final double FOLDING_IN = 0;
 
     /* A number in degrees that the triggers can adjust the arm position by */
     final double FUDGE_FACTOR = 15 * ARM_TICKS_PER_DEGREE;
@@ -123,8 +128,11 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
     double armPositionFudgeFactor;
     /** @noinspection ConstantValue*/
     double extendPosition = (int)RETRACTED_ARM;
-    double robotSpeed = 1.0; // this variable will only have values 1 and 1/x, x TBD to how sensitive should it be
-
+    double robotSpeed = 1.0; // this variable will only have values 1 and 1/4
+    String robotSpeed_text = "Fast";
+    double read_pos;
+    double func;
+    double read_extender_pos;
 
     @Override
     public void runOpMode() {
@@ -245,10 +253,12 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
             if(gamepad1.a)
             {
                 robotSpeed = 0.25; // added "sensitivity/overflow mode"
+                robotSpeed_text = "Slow";
             }
             else if (gamepad1.b)
             {
                 robotSpeed = 1.0;
+                robotSpeed_text = "Fast";
             }
 
 
@@ -294,67 +304,60 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
                 armPosition = ARM_COLLECT;
                 wrist.setPosition(WRIST_FOLDED_OUT);
                 intake.setPower(INTAKE_COLLECT);
-                }
+            }
 
-                else if (gamepad2.left_bumper)
-                {
-                    /* This is about 20° up from the collecting position to clear the barrier
-                    Note here that we don't set the wrist position or the intake power when we
-                    select this "mode", this means that the intake and wrist will continue what
-                    they were doing before we clicked left bumper. */
-                    armPosition = ARM_CLEAR_BARRIER;
-                }
+            else if (gamepad2.left_bumper)
+            {
+                /* This is about 20° up from the collecting position to clear the barrier
+                Note here that we don't set the wrist position or the intake power when we
+                select this "mode", this means that the intake and wrist will continue what
+                they were doing before we clicked left bumper. */
+                armPosition = ARM_CLEAR_BARRIER;
+            }
 
-                else if (gamepad2.y)
-                {
-                    /* This is the correct height to score the sample in the LOW BASKET */
-                    armPosition = ARM_SCORE_SAMPLE_IN_LOW; // this will be changed to high basket position, after some testing
+            else if (gamepad2.y)
+            {
+                /* This is the correct height to score the sample in the LOW BASKET */
+                armPosition = ARM_SCORE_SAMPLE_IN_LOW; // this will be changed to high basket position, after some testing
 
-                }
+            }
 
-                else if (gamepad2.dpad_left)
-                {
-                    /* This turns off the intake, folds in the wrist, and moves the arm
-                    back to folded inside the robot. This is also the starting configuration */
-                    armPosition = ARM_COLLAPSED_INTO_ROBOT;
-                    intake.setPower(INTAKE_OFF);
-                    wrist.setPosition(WRIST_FOLDED_IN);
-                }
+            else if (gamepad2.dpad_left)
+            {
+                /* This turns off the intake, folds in the wrist, and moves the arm
+                back to folded inside the robot. This is also the starting configuration */
+                armPosition = ARM_COLLAPSED_INTO_ROBOT;
+                intake.setPower(INTAKE_OFF);
+                wrist.setPosition(WRIST_FOLDED_IN);
+            }
 
-                else if (gamepad2.dpad_right)
-                {
-                    /* This is the correct height to score SPECIMEN on the HIGH CHAMBER */
-                    armPosition = ARM_SCORE_SPECIMEN;
-                    wrist.setPosition(WRIST_FOLDED_IN);
-                }
+            else if (gamepad2.dpad_right)
+            {
+                /* This is the correct height to score SPECIMEN on the HIGH CHAMBER */
+                armPosition = ARM_SCORE_SPECIMEN;
+                wrist.setPosition(WRIST_FOLDED_IN);
+            }
 
-                else if (gamepad2.dpad_up)
-                {
-                    /* This sets the arm to vertical to hook onto the LOW RUNG for hanging */
-                    armPosition = ARM_ATTACH_HANGING_HOOK;
-                    intake.setPower(INTAKE_OFF);
-                    wrist.setPosition(WRIST_FOLDED_IN);
-                }
+            else if (gamepad2.dpad_up)
+            {
+                /* This sets the arm to vertical to hook onto the LOW RUNG for hanging */
+                armPosition = ARM_ATTACH_HANGING_HOOK;
+                intake.setPower(INTAKE_OFF);
+                wrist.setPosition(WRIST_FOLDED_IN);
+            }
 
-                else if (gamepad2.dpad_down)
-                {
-                    /* this moves the arm down to lift the robot up once it has been hooked */
-                    armPosition = ARM_WINCH_ROBOT;
-                    intake.setPower(INTAKE_OFF);
-                    wrist.setPosition(WRIST_FOLDED_IN);
+            else if (gamepad2.dpad_down)
+            {
+                /* this moves the arm down to lift the robot up once it has been hooked */
+                armPosition = ARM_WINCH_ROBOT;
+                intake.setPower(INTAKE_OFF);
+                wrist.setPosition(WRIST_FOLDED_IN);
             }
 
             // adding extending functionality to the joysticks of gamepad2
-            if (gamepad2.left_stick_button)
-            {
-                    extendPosition = EXTENDED_ARM;
-                }
-                else if (gamepad2.right_stick_button)
-                {
-                    extendPosition = RETRACTED_ARM;
-            }
 
-
+            read_pos = armMotor.getCurrentPosition()/ARM_TICKS_PER_DEGREE;
+            read_extender_pos = extendMotor.getCurrentPosition()/EXTEND_TICKS_PER_DEGREE;
             /* Here we create a "fudge factor" for the arm position.
             This allows you to adjust (or "fudge") the arm position slightly with the gamepad triggers.
             We want the left trigger to move the arm up, and right trigger to move the arm down.
@@ -365,15 +368,47 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
 
             armPositionFudgeFactor = FUDGE_FACTOR * (gamepad2.right_trigger + (-gamepad2.left_trigger));
 
-
+            read_pos = armMotor.getCurrentPosition()/ARM_TICKS_PER_DEGREE;
+            read_extender_pos = extendMotor.getCurrentPosition()/EXTEND_TICKS_PER_DEGREE;
             /* Here we set the target position of our arm to match the variable that was selected
             by the driver.
             We also set the target velocity (speed) the motor runs at, and use setMode to run it.*/
-            armMotor.setTargetPosition((int) (armPosition + armPositionFudgeFactor)); // removed velocity, to counteract torque trade-offs
+            armMotor.setTargetPosition((int) (armPosition + armPositionFudgeFactor));
+
+            if (read_pos > 115 && read_extender_pos > 1500)
+            {
+                armMotor.setTargetPosition((int) (115*ARM_TICKS_PER_DEGREE));
+                ((DcMotorEx) armMotor).setVelocity(800);                                          //experiment here
+                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+            func = 1100*cos(PI*read_pos/90)+1900;
+
+            if (read_pos < 90)
+            {
+                ((DcMotorEx) armMotor).setVelocity((int) func);                                          //experiment here
+            }
+
+            if (read_pos >= 90)
+            {
+                ((DcMotorEx) armMotor).setVelocity(800);
+            }
+
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
+            if (gamepad2.left_stick_button)
+            {
+                extendPosition = EXTENDED_ARM;
+            }
+
+            if (gamepad2.right_stick_button)
+            {
+                extendPosition = RETRACTED_ARM;
+            }
+
             extendMotor.setTargetPosition((int)extendPosition);
+            ((DcMotorEx) extendMotor).setVelocity(2100);
             extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             /* TECH TIP: Encoders, integers, and doubles
@@ -408,9 +443,9 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
 
 
             /* send telemetry to the driver of the arm's current position and target position */
-            telemetry.addData("armTarget: ", armMotor.getTargetPosition());
-            telemetry.addData("arm Encoder: ", armMotor.getCurrentPosition());
-            telemetry.addData("Current robot speed:", robotSpeed);
+            telemetry.addData("armTarget degrees: ", armMotor.getTargetPosition()/ARM_TICKS_PER_DEGREE);
+            telemetry.addData("arm Encoder degrees: ", armMotor.getCurrentPosition()/ARM_TICKS_PER_DEGREE);
+            telemetry.addData("Current robot speed:", robotSpeed_text);
             telemetry.update();
 
         }
