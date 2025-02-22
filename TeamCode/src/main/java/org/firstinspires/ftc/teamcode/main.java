@@ -389,7 +389,7 @@ public class main extends LinearOpMode {
                 ((DcMotorEx) armMotor).setVelocity((int) func);                                          //experiment here
             }
 
-            if (read_pos >= 90)
+            else if (read_pos >= 90)
             {
                 ((DcMotorEx) armMotor).setVelocity(800);
             }
