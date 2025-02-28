@@ -32,6 +32,7 @@ public class test extends LinearOpMode
     double wrist_pow = 0;
     double fold = 0;
     double pos = 0;
+    double get_pos = 0;
     double epos = 0;
     double func = 0;
 
@@ -48,8 +49,9 @@ public class test extends LinearOpMode
                     *1/360.0; // ticks per degree
 
 
-    double read_pos = pos/ARM_TICKS_PER_DEGREE;
+    double read_pos = get_pos/ARM_TICKS_PER_DEGREE;
     double read_extender_pos = epos/EXTEND_TICKS_PER_DEGREE;
+    double read_set_pos = pos/ARM_TICKS_PER_DEGREE;
 
     @Override
 
@@ -61,11 +63,21 @@ public class test extends LinearOpMode
         rightDriveR = hardwareMap.get(DcMotor.class, "right_rear_drive");//0C
         armMotor   = hardwareMap.get(DcMotor.class, "left_arm"); //the arm motor  //1E
         extendMotor = hardwareMap.get(DcMotor.class, "extender"); // extender motor //0E
-        intake = hardwareMap.get(CRServo .class, "intake"); //0E
-        wrist  = hardwareMap.get(Servo .class, "wrist"); //1E
+        intake = hardwareMap.get(CRServo.class, "intake"); //0E
+        wrist  = hardwareMap.get(Servo.class, "wrist"); //1E
         folding = hardwareMap.get(Servo.class, "folding"); //2E
 
         func = 1100*cos(PI*read_pos/90)+1900;
+
+        armMotor.setTargetPosition(0);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        /* Same as previous code block, but for the extendMotor */
+
+        extendMotor.setTargetPosition(0);
+        extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        extendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         waitForStart();
         while (opModeIsActive())
@@ -110,11 +122,12 @@ public class test extends LinearOpMode
             }
             else if (gamepad1.dpad_right)
             {
-                extend = 10*EXTEND_TICKS_PER_DEGREE;
+                extend = 2000 *EXTEND_TICKS_PER_DEGREE;
             }
             else if (gamepad1.dpad_down)
             {
                 intake_pow = .5;
+                intake.setPower(intake_pow);
             }
             else if (gamepad1.dpad_left)
             {
@@ -127,36 +140,36 @@ public class test extends LinearOpMode
 
             if (gamepad1.dpad_up)
             {
-                arm = 10*ARM_TICKS_PER_DEGREE;
+                arm = 1*ARM_TICKS_PER_DEGREE;
             }
 
 
-            pos = armMotor.getCurrentPosition();
-            epos = extendMotor.getCurrentPosition();
+            pos += arm*gamepad1.left_stick_x;
+            read_set_pos = pos/ARM_TICKS_PER_DEGREE;
+            if (gamepad1.left_stick_button && pos >=0)
+            {
+                armMotor.setTargetPosition((int) (pos));
+            }
+            else if (pos < 0)
+            {
+                pos = 0;
+            }
 
-            read_pos = pos/ARM_TICKS_PER_DEGREE;
+            get_pos = armMotor.getCurrentPosition();
+            epos = extendMotor.getCurrentPosition();
+            read_pos = get_pos/ARM_TICKS_PER_DEGREE;
             read_extender_pos = epos/EXTEND_TICKS_PER_DEGREE;
 
 
-            if (read_pos < 20)
+            if (read_pos > 115 && read_extender_pos > 1500)
             {
-                armMotor.setTargetPosition((int) (20*ARM_TICKS_PER_DEGREE));
+                armMotor.setTargetPosition((int) (115*ARM_TICKS_PER_DEGREE));
                 ((DcMotorEx) armMotor).setVelocity(800);                                          //experiment here
                 armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
 
-            if (read_pos > 90 && read_extender_pos > 30)
-            {
-                armMotor.setTargetPosition((int) (90*ARM_TICKS_PER_DEGREE));
-                ((DcMotorEx) armMotor).setVelocity(800);                                          //experiment here
-                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-
-
-            armMotor.setTargetPosition((int) (arm*gamepad1.left_stick_x+pos));
-
-
-            if (read_pos < 90 && read_pos >= 0)
+            func = 1100*cos(PI*read_pos/90)+1900;
+            if (read_pos < 90)
             {
                 ((DcMotorEx) armMotor).setVelocity((int) func);                                          //experiment here
             }
@@ -168,7 +181,7 @@ public class test extends LinearOpMode
 
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            extendMotor.setTargetPosition((int) (extend*gamepad1.left_stick_x+epos));
+            extendMotor.setTargetPosition((int) (extend));
             ((DcMotorEx) extendMotor).setVelocity(2100);
             extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -177,7 +190,7 @@ public class test extends LinearOpMode
             telemetry.addData("arm Encoder: ", armMotor.getCurrentPosition());
             telemetry.addData("Current Arm pos:", (int)read_pos);
             telemetry.addData("Current Extender pos:", (int)read_extender_pos);
-
+            telemetry.addData("Target pos", read_set_pos);
             telemetry.addData("Left Rear", leftR);
             telemetry.addData("Left Front", leftF);
             telemetry.addData("Right Rear", rightR);
