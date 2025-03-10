@@ -375,10 +375,14 @@ public class main extends LinearOpMode {
             We also set the target velocity (speed) the motor runs at, and use setMode to run it.*/
             armMotor.setTargetPosition((int) (armPosition + armPositionFudgeFactor));
 
+
+            //extend limits
+
+
             if (read_pos > 115 && read_extender_pos > 1500)
             {
                 armMotor.setTargetPosition((int) (115*ARM_TICKS_PER_DEGREE));
-                ((DcMotorEx) armMotor).setVelocity(800);                                          //experiment here
+                ((DcMotorEx) armMotor).setVelocity(800);
                 armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
 
@@ -386,7 +390,7 @@ public class main extends LinearOpMode {
 
             if (read_pos < 90)
             {
-                ((DcMotorEx) armMotor).setVelocity((int) func);                                          //experiment here
+                ((DcMotorEx) armMotor).setVelocity((int) func);
             }
 
             else if (read_pos >= 90)
