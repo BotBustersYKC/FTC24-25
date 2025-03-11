@@ -201,6 +201,8 @@ public class main extends LinearOpMode {
         tilt_right = hardwareMap.get(Servo.class, "tilt_right");
         wrist = hardwareMap.get(Servo.class, "wrist");
 
+        tilt_left.setDirection(Servo.Direction.REVERSE);
+
         /* Make sure that the intake is off, and the wrist is folded in. */
         intake.setPower(INTAKE_OFF);
         tilt_left.setPosition(WRIST_FOLDED_IN);
