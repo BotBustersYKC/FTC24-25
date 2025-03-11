@@ -27,8 +27,8 @@ public class debug_2 extends LinearOpMode
 
     public void runOpMode()
     {
-        Servo1  = hardwareMap.get(Servo.class, "Servo1"); //
-        Servo2 = hardwareMap.get(Servo.class, "Servo2"); //
+        Servo1  = hardwareMap.get(Servo.class, "Servo1");
+        Servo2 = hardwareMap.get(Servo.class, "Servo2");
         Servo3 = hardwareMap.get(CRServo.class, "Servo3");
         extendMotor = hardwareMap.get(DcMotor.class, "extender");
         armMotor = hardwareMap.get(DcMotor.class, "left_arm");
@@ -59,8 +59,7 @@ public class debug_2 extends LinearOpMode
             ((DcMotorEx) armMotor).setVelocity(2100);
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            telemetry.addData("Servo1 pos", Servo1_pos);
-            telemetry.addData("Servo2 pos", Servo2_pos);
+            telemetry.addData("Position:", position);
 
             telemetry.update();
         }
