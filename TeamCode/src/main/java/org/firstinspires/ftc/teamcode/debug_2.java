@@ -73,9 +73,17 @@ public class debug_2 extends LinearOpMode
             {
                 Servo4.setPower(0);
             }
+            if (gamepad1.left_bumper)
+            {
+                extend += 5*EXTEND_TICKS_PER_DEGREE;
+            }
+            if (gamepad1.right_bumper)
+            {
+                extend -= 5*EXTEND_TICKS_PER_DEGREE;
+            }
 
 
-            extendMotor.setTargetPosition(0);
+            extendMotor.setTargetPosition((int) extend);
             ((DcMotorEx) extendMotor).setVelocity(2100);
             extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 

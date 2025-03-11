@@ -60,9 +60,9 @@ public class main extends LinearOpMode {
     public DcMotor armMotor    = null; //the arm motor
     public DcMotor extendMotor = null; // extender motor
     public CRServo intake      = null; //the active intake servo
-    public Servo   wrist       = null; //the wrist servo
-    public Servo   folding     = null; //folding servo
-    public Servo   rotate       = null; // rotating servo arm
+    public Servo   tilt_left   = null; //the tilt left servo        // REVERSE
+    public Servo   tilt_right  = null; // tilt right servo
+    public Servo   wrist      = null; // rotating servo arm
 
 
     /* This constant is the number of encoder ticks for each degree of rotation of the arm.
@@ -196,13 +196,14 @@ public class main extends LinearOpMode {
 
 
         /* Define and initialize servos.*/
-        intake = hardwareMap.get(CRServo.class, "intake"); //0E
-        wrist  = hardwareMap.get(Servo.class, "wrist"); //1E
-        folding = hardwareMap.get(Servo.class, "folding"); //2E
+        intake = hardwareMap.get(CRServo.class, "intake");
+        tilt_left  = hardwareMap.get(Servo.class, "tilt_left");
+        tilt_right = hardwareMap.get(Servo.class, "tilt_right");
+        wrist = hardwareMap.get(Servo.class, "wrist");
 
         /* Make sure that the intake is off, and the wrist is folded in. */
         intake.setPower(INTAKE_OFF);
-        wrist.setPosition(WRIST_FOLDED_IN);
+        tilt_left.setPosition(WRIST_FOLDED_IN);
 
         /* Send telemetry message to signify robot waiting */
         telemetry.addLine("Robot Ready.");
@@ -302,7 +303,7 @@ public class main extends LinearOpMode {
             {
                 /* This is the intaking/collecting arm position */
                 armPosition = ARM_COLLECT;
-                wrist.setPosition(WRIST_FOLDED_OUT);
+                tilt_left.setPosition(WRIST_FOLDED_OUT);
                 intake.setPower(INTAKE_COLLECT);
             }
 
@@ -328,14 +329,14 @@ public class main extends LinearOpMode {
                 back to folded inside the robot. This is also the starting configuration */
                 armPosition = ARM_COLLAPSED_INTO_ROBOT;
                 intake.setPower(INTAKE_OFF);
-                wrist.setPosition(WRIST_FOLDED_IN);
+                tilt_left.setPosition(WRIST_FOLDED_IN);
             }
 
             else if (gamepad2.dpad_right)
             {
                 /* This is the correct height to score SPECIMEN on the HIGH CHAMBER */
                 armPosition = ARM_SCORE_SPECIMEN;
-                wrist.setPosition(WRIST_FOLDED_IN);
+                tilt_left.setPosition(WRIST_FOLDED_IN);
             }
 
             else if (gamepad2.dpad_up)
@@ -343,7 +344,7 @@ public class main extends LinearOpMode {
                 /* This sets the arm to vertical to hook onto the LOW RUNG for hanging */
                 armPosition = ARM_ATTACH_HANGING_HOOK;
                 intake.setPower(INTAKE_OFF);
-                wrist.setPosition(WRIST_FOLDED_IN);
+                tilt_left.setPosition(WRIST_FOLDED_IN);
             }
 
             else if (gamepad2.dpad_down)
@@ -351,13 +352,11 @@ public class main extends LinearOpMode {
                 /* this moves the arm down to lift the robot up once it has been hooked */
                 armPosition = ARM_WINCH_ROBOT;
                 intake.setPower(INTAKE_OFF);
-                wrist.setPosition(WRIST_FOLDED_IN);
+                tilt_left.setPosition(WRIST_FOLDED_IN);
             }
 
             // adding extending functionality to the joysticks of gamepad2
 
-            read_pos = armMotor.getCurrentPosition()/ARM_TICKS_PER_DEGREE;
-            read_extender_pos = extendMotor.getCurrentPosition()/EXTEND_TICKS_PER_DEGREE;
             /* Here we create a "fudge factor" for the arm position.
             This allows you to adjust (or "fudge") the arm position slightly with the gamepad triggers.
             We want the left trigger to move the arm up, and right trigger to move the arm down.
@@ -382,6 +381,12 @@ public class main extends LinearOpMode {
             if (read_pos > 115 && read_extender_pos > 1500)
             {
                 armMotor.setTargetPosition((int) (115*ARM_TICKS_PER_DEGREE));
+                ((DcMotorEx) armMotor).setVelocity(800);
+                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            if (read_pos < 70 && read_extender_pos > 1500)
+            {
+                armMotor.setTargetPosition((int) (70*ARM_TICKS_PER_DEGREE));
                 ((DcMotorEx) armMotor).setVelocity(800);
                 armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
