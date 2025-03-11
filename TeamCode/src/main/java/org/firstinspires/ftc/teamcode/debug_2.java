@@ -43,23 +43,11 @@ public class debug_2 extends LinearOpMode
 
             if (gamepad1.x)
             {
-                position = .27;
+                position += .005;
             }
             if (gamepad1.y)
             {
-                position = 0.1;
-            }
-            if (gamepad1.a)
-            {
-                Servo3.setPower(1);
-            }
-            if (gamepad1.b)
-            {
-                Servo3.setPower(-1);
-            }
-            if (gamepad1.dpad_up)
-            {
-                Servo3.setPower(0);
+                position -= .005;
             }
 
 
