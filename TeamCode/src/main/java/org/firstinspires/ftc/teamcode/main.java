@@ -97,7 +97,7 @@ public class main extends LinearOpMode {
     as far from the starting position, decrease it. */
 
     final double ARM_COLLAPSED_INTO_ROBOT  = 0;
-    final double ARM_COLLECT               = 250 * ARM_TICKS_PER_DEGREE;
+    final double ARM_COLLECT               = 173 * ARM_TICKS_PER_DEGREE;
     final double ARM_SCORE_SPECIMEN        = 90 * ARM_TICKS_PER_DEGREE;
     final double ARM_SCORE_SAMPLE_IN_LOW   = 90 * ARM_TICKS_PER_DEGREE;
     final double ARM_ATTACH_HANGING_HOOK   = 90 * ARM_TICKS_PER_DEGREE;
@@ -207,6 +207,7 @@ public class main extends LinearOpMode {
         /* Make sure that the intake is off, and the wrist is folded in. */
         intake.setPower(INTAKE_OFF);
         tilt_left.setPosition(COLLECTING_POSITION);
+        tilt_right.setPosition(COLLECTING_POSITION);
 
         /* Send telemetry message to signify robot waiting */
         telemetry.addLine("Robot Ready.");

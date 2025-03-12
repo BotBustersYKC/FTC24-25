@@ -85,6 +85,12 @@ public class Auto extends LinearOpMode {
                     *250047.0/4913.0 // exact ratio
                     *1/360.0; // ticks per degree
 
+
+    final double ROTATION_TICKS_PER_DEGREE =
+            28 //encoder ticks
+                    *3591.0/187.0 // exact ratio
+                    *1/360.0
+                    *48.0/10.0; // ticks per degree
     /* These constants hold the position that the arm is commanded to run to.
     These are relative to where the arm was located when you start the OpMode. So make sure the
     arm is reset to collapsed inside the robot before you start the program.
@@ -128,18 +134,29 @@ public class Auto extends LinearOpMode {
     /** @noinspection ConstantValue*/
     double extendPosition = (int)RETRACTED_ARM;
     double extendPositionFudgeFactor;
-    double robotSpeed = 1.0; // this variable will only have values 1 and 1/4
-    String robotSpeed_text = "Fast";
     double read_pos;
     double func;
     double read_extender_pos;
 
-    private void Move(double left_forward, double left_rear, double right_forward, double right_rear)
+    private void Move_Distance_cm(double left_forward, double left_rear, double right_forward, double right_rear)
     {
-        leftDriveF.setPower(left_forward);
-        leftDriveR.setPower(left_rear);
-        rightDriveF.setPower(right_forward);
-        rightDriveR.setPower(right_rear);
+        int left_F = (int) (left_forward*ROTATION_TICKS_PER_DEGREE);
+        int left_R = (int) (left_rear*ROTATION_TICKS_PER_DEGREE);
+        int right_F = (int) (right_forward*ROTATION_TICKS_PER_DEGREE);
+        int right_R = (int) (right_rear*ROTATION_TICKS_PER_DEGREE);
+
+
+        leftDriveF.setTargetPosition(left_F);
+        leftDriveR.setTargetPosition(left_R);
+        rightDriveF.setTargetPosition(right_F);
+        rightDriveR.setTargetPosition(right_R);
+
+        while (leftDriveF.isBusy())
+        {
+            telemetry.addLine("Sleep");
+            telemetry.update();
+            telemetry.clear();
+        }
     }
 
     @Override
@@ -147,14 +164,6 @@ public class Auto extends LinearOpMode {
         /*
         These variables are private to the OpMode, and are used to control the drivetrain.
          */
-        double left_forward;
-        double left_rear;
-        double right_forward;
-        double right_rear;
-        double forward;
-        double rotate;
-        double side;
-        double max;
 
 
         /* Define and Initialize Motors */
@@ -173,6 +182,11 @@ public class Auto extends LinearOpMode {
         rightDriveF.setDirection(DcMotor.Direction.REVERSE);
         rightDriveR.setDirection(DcMotor.Direction.REVERSE);
 
+
+        leftDriveF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftDriveR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDriveF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDriveR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         /* Setting zeroPowerBehavior to BRAKE enables a "brake mode". This causes the motor to slow down
         much faster when it is coasting. This creates a much more controllable drivetrain. As the robot
@@ -215,6 +229,7 @@ public class Auto extends LinearOpMode {
         /* Make sure that the intake is off, and the wrist is folded in. */
         intake.setPower(INTAKE_OFF);
         tilt_left.setPosition(COLLECTING_POSITION);
+        tilt_right.setPosition(COLLECTING_POSITION);
 
         /* Send telemetry message to signify robot waiting */
         telemetry.addLine("Robot Ready.");
@@ -226,56 +241,16 @@ public class Auto extends LinearOpMode {
         /* Run until the driver presses stop */
         if (opModeIsActive()) {
 
-            /* Set the drive and turn variables to follow the joysticks on the gamepad.
-            the joysticks decrease as you push them up. So reverse the Y axis. */
-            forward = gamepad1.left_stick_y * robotSpeed;
-            rotate  = -gamepad1.right_stick_x * robotSpeed;
 
-            while (leftDriveF.isBusy())
-            {
-                telemetry.addLine("End of Sleep");
-            }
+            Move_Distance_cm(5, 5, 5, 5);
+
+
+            telemetry.addLine("End of Sleep");
             telemetry.update();
-            telemetry.clear();
-
-            //sideways implement
-            side = -gamepad1.left_stick_x * robotSpeed;
-
-            /* Here we "mix" the input channels together to find the power to apply to each motor.
-            The both motors need to be set to a mix of how much you're retesting the robot move
-            forward, and how much you're requesting the robot turn. When you ask the robot to rotate
-            the right and left motors need to move in opposite directions. So we will add rotate to
-            forward for the left motor, and subtract rotate from forward for the right motor. */
 
 
-            left_forward  = forward + rotate + side;
-            left_rear = forward + rotate - side;
-            right_forward = forward - rotate - side;
-            right_rear = forward - rotate + side;
 
-            /* Normalize the values so neither exceed +/- 1.0 */
-            max = Math.max(Math.max(Math.abs(left_forward), Math.abs(left_rear)), Math.max(Math.abs(right_forward), Math.abs(right_rear)));
-            if (max > 1.0)
-            {
-                left_forward /= max;
-                left_rear /= max;
-                right_forward /= max;
-                right_rear /= max;
-            }
 
-            /* Set the motor power to the variables we've mixed and normalized */
-            Move(left_forward, left_rear, right_forward, right_rear);
-
-            if(gamepad1.left_stick_button)
-            {
-                robotSpeed = 0.25; // added "sensitivity/overflow mode"
-                robotSpeed_text = "Slow";
-            }
-            else if (gamepad1.right_stick_button)
-            {
-                robotSpeed = 1.0;
-                robotSpeed_text = "Fast";
-            }
 
 
             /* Here we handle the three buttons that have direct control of the intake speed.
@@ -490,7 +465,6 @@ public class Auto extends LinearOpMode {
             /* send telemetry to the driver of the arm's current position and target position */
             telemetry.addData("armTarget degrees: ", armMotor.getTargetPosition()/ARM_TICKS_PER_DEGREE);
             telemetry.addData("arm Encoder degrees: ", armMotor.getCurrentPosition()/ARM_TICKS_PER_DEGREE);
-            telemetry.addData("Current robot speed:", robotSpeed_text);
             telemetry.update();
 
         }
