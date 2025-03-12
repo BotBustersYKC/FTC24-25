@@ -254,12 +254,12 @@ public class main extends LinearOpMode {
             rightDriveF.setPower(right_forward);
             rightDriveR.setPower(right_rear);
 
-            if(gamepad1.a)
+            if(gamepad1.left_stick_button)
             {
                 robotSpeed = 0.25; // added "sensitivity/overflow mode"
                 robotSpeed_text = "Slow";
             }
-            else if (gamepad1.b)
+            else if (gamepad1.right_stick_button)
             {
                 robotSpeed = 1.0;
                 robotSpeed_text = "Fast";
@@ -308,6 +308,9 @@ public class main extends LinearOpMode {
                 armPosition = ARM_COLLECT;
                 tilt_left.setPosition(WRIST_FOLDED_OUT);
                 intake.setPower(INTAKE_COLLECT);
+
+                extendPositionFudgeFactor = 0;
+                armPositionFudgeFactor = 0;
             }
 
             else if (gamepad2.left_trigger > 0)
@@ -316,6 +319,8 @@ public class main extends LinearOpMode {
                 armPosition = ARM_SCORE_SAMPLE_IN_LOW;
                 extendPosition = EXTENDED_ARM;
 
+                extendPositionFudgeFactor = 0;
+                armPositionFudgeFactor = 0;
             }
 
             else if (gamepad2.dpad_left)
@@ -325,6 +330,9 @@ public class main extends LinearOpMode {
                 armPosition = ARM_COLLAPSED_INTO_ROBOT;
                 intake.setPower(INTAKE_OFF);
                 tilt_left.setPosition(WRIST_FOLDED_IN);
+
+                extendPositionFudgeFactor = 0;
+                armPositionFudgeFactor = 0;
             }
 
             else if (gamepad2.dpad_right)
@@ -332,7 +340,11 @@ public class main extends LinearOpMode {
                 /* This is the correct height to score SPECIMEN on the HIGH CHAMBER */
                 armPosition = ARM_SCORE_SPECIMEN;
                 tilt_left.setPosition(WRIST_FOLDED_IN);
+
+                extendPositionFudgeFactor = 0;
+                armPositionFudgeFactor = 0;
             }
+
             if (gamepad2.left_bumper)
             {
                 armPositionFudgeFactor += .1*ARM_TICKS_PER_DEGREE;
