@@ -307,7 +307,10 @@ public class main extends LinearOpMode {
                 /* This is the intaking/collecting arm position */
                 armPosition = ARM_COLLECT;
                 tilt_left.setPosition(COLLECTING_POSITION);
+                tilt_right.setPosition(COLLECTING_POSITION);
                 intake.setPower(INTAKE_COLLECT);
+                wrist.setPosition(WRIST_FOLDED_OUT);
+                extendPosition = RETRACTED_ARM;
 
                 extendPositionFudgeFactor = 0;
                 armPositionFudgeFactor = 0;
@@ -318,6 +321,9 @@ public class main extends LinearOpMode {
                 /* This is the correct height to score the sample in the LOW BASKET */
                 armPosition = ARM_SCORE_SAMPLE_IN_LOW;
                 extendPosition = EXTENDED_ARM;
+                tilt_left.setPosition(SCORING_POSITION);
+                tilt_right.setPosition(SCORING_POSITION);
+                wrist.setPosition(WRIST_FOLDED_OUT);
 
                 extendPositionFudgeFactor = 0;
                 armPositionFudgeFactor = 0;
@@ -329,7 +335,10 @@ public class main extends LinearOpMode {
                 back to folded inside the robot. This is also the starting configuration */
                 armPosition = ARM_COLLAPSED_INTO_ROBOT;
                 intake.setPower(INTAKE_OFF);
-                tilt_left.setPosition(WRIST_FOLDED_IN);
+                tilt_left.setPosition(STARTING_CONFIG);
+                tilt_right.setPosition(STARTING_CONFIG);
+                wrist.setPosition(WRIST_FOLDED_OUT);
+                extendPosition = RETRACTED_ARM;
 
                 extendPositionFudgeFactor = 0;
                 armPositionFudgeFactor = 0;
@@ -339,7 +348,10 @@ public class main extends LinearOpMode {
             {
                 /* This is the correct height to score SPECIMEN on the HIGH CHAMBER */
                 armPosition = ARM_SCORE_SPECIMEN;
-                tilt_left.setPosition(WRIST_FOLDED_IN);
+                tilt_left.setPosition(SCORING_POSITION);
+                tilt_right.setPosition(SCORING_POSITION);
+                wrist.setPosition(WRIST_HIGH_CHAMBER);
+                extendPosition = EXTENDED_ARM;
 
                 extendPositionFudgeFactor = 0;
                 armPositionFudgeFactor = 0;
@@ -368,15 +380,26 @@ public class main extends LinearOpMode {
                 /* This sets the arm to vertical to hook onto the LOW RUNG for hanging */
                 armPosition = ARM_ATTACH_HANGING_HOOK;
                 intake.setPower(INTAKE_OFF);
-                tilt_left.setPosition(WRIST_FOLDED_IN);
+                tilt_left.setPosition(SCORING_POSITION);
+                tilt_right.setPosition(SCORING_POSITION);
+                wrist.setPosition(WRIST_FOLDED_IN);
+
+                extendPositionFudgeFactor = 0;
+                armPositionFudgeFactor = 0;
             }
 
             else if (gamepad1.dpad_down)
             {
                 /* this moves the arm down to lift the robot up once it has been hooked */
                 armPosition = ARM_WINCH_ROBOT;
+                extendPosition = RETRACTED_ARM;
                 intake.setPower(INTAKE_OFF);
-                tilt_left.setPosition(WRIST_FOLDED_IN);
+                tilt_left.setPosition(SCORING_POSITION);
+                tilt_right.setPosition(SCORING_POSITION);
+                wrist.setPosition(WRIST_FOLDED_OUT);
+
+                extendPositionFudgeFactor = 0;
+                armPositionFudgeFactor = 0;
             }
 
             // adding extending functionality to the joysticks of gamepad2
@@ -430,17 +453,8 @@ public class main extends LinearOpMode {
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-            if (gamepad2.left_stick_button)
-            {
-                extendPosition = EXTENDED_ARM;
-            }
 
-            if (gamepad2.right_stick_button)
-            {
-                extendPosition = RETRACTED_ARM;
-            }
-
-            extendMotor.setTargetPosition((int)extendPosition);
+            extendMotor.setTargetPosition((int)(extendPosition + extendPositionFudgeFactor));
             ((DcMotorEx) extendMotor).setVelocity(2100);
             extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
