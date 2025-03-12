@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
 @TeleOp(name="Read_pos-debug", group="Robot")
 public class debug_2 extends LinearOpMode
 {
@@ -51,6 +53,8 @@ public class debug_2 extends LinearOpMode
         {
             Servo1.setPosition(position);
             Servo2.setPosition(position);
+
+            ((DcMotorEx) extendMotor).setMotorEnable();
 
             if (gamepad1.x)
             {
@@ -98,6 +102,13 @@ public class debug_2 extends LinearOpMode
                 rotate -= .3*ARM_TICKS_PER_DEGREE;
             }
 
+            ((DcMotorEx) armMotor).setCurrentAlert(5, CurrentUnit.AMPS);
+            ((DcMotorEx) extendMotor).setCurrentAlert(5,CurrentUnit.AMPS);
+
+            if (((DcMotorEx) extendMotor).isOverCurrent())
+            {
+                ((DcMotorEx) extendMotor).setMotorDisable();
+            }
 
             extendMotor.setTargetPosition((int) extend);
             ((DcMotorEx) extendMotor).setVelocity(2100);
