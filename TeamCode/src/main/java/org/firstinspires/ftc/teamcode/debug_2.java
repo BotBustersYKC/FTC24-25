@@ -20,6 +20,13 @@ public class debug_2 extends LinearOpMode
     double position;
     double servo_3_pos;
     double extend;
+    double rotate;
+
+    final double ARM_TICKS_PER_DEGREE =
+            28 // number of encoder ticks per rotation of the bare motor
+                    * 250047.0 / 4913.0 // This is the exact gear ratio of the 50.9:1 Yellow Jacket gearbox
+                    * 100.0 / 20.0 // This is the external gear reduction, a 20T pinion gear that drives a 100T hub-mount gear
+                    * 1/360.0; // we want ticks per degree, not per rotation
     final double EXTEND_TICKS_PER_DEGREE =
             28 //encoder ticks
                     *250047.0/4913.0 // exact ratio
@@ -37,7 +44,7 @@ public class debug_2 extends LinearOpMode
         armMotor = hardwareMap.get(DcMotor.class, "left_arm");
 
         Servo2.setDirection(Servo.Direction.REVERSE);
-        //Servo4.setDirection(CRServo.Direction.REVERSE);
+        Servo3.setDirection(Servo.Direction.REVERSE);
 
         waitForStart();
         while (opModeIsActive())
@@ -82,18 +89,28 @@ public class debug_2 extends LinearOpMode
                 extend -= 5*EXTEND_TICKS_PER_DEGREE;
             }
 
+            if (gamepad1.a)
+            {
+                rotate += .3*ARM_TICKS_PER_DEGREE;
+            }
+            if (gamepad1.b)
+            {
+                rotate -= .3*ARM_TICKS_PER_DEGREE;
+            }
+
 
             extendMotor.setTargetPosition((int) extend);
             ((DcMotorEx) extendMotor).setVelocity(2100);
             extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            armMotor.setTargetPosition(0);
+            armMotor.setTargetPosition((int) rotate);
             ((DcMotorEx) armMotor).setVelocity(2100);
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             telemetry.addData("Position:", position);
             telemetry.addData("Rotating Servo:", servo_3_pos);
-
+            telemetry.addData("Extender position", extend);
+            telemetry.addData("Arm position", rotate/ARM_TICKS_PER_DEGREE);
             telemetry.update();
         }
     }

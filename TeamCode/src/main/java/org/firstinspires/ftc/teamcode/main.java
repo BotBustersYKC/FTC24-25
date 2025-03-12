@@ -47,7 +47,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
  */
 
 
-/** @noinspection CommentedOutCode*/
 @TeleOp(name="main", group="Robot")
 //@Disabled
 public class main extends LinearOpMode {
@@ -99,15 +98,14 @@ public class main extends LinearOpMode {
 
     final double ARM_COLLAPSED_INTO_ROBOT  = 0;
     final double ARM_COLLECT               = 250 * ARM_TICKS_PER_DEGREE;
-    final double ARM_CLEAR_BARRIER         = 230 * ARM_TICKS_PER_DEGREE;
     final double ARM_SCORE_SPECIMEN        = 160 * ARM_TICKS_PER_DEGREE;
     final double ARM_SCORE_SAMPLE_IN_LOW   = 160 * ARM_TICKS_PER_DEGREE;
-    final double ARM_ATTACH_HANGING_HOOK   = 120 * ARM_TICKS_PER_DEGREE;
+    final double ARM_ATTACH_HANGING_HOOK   = 100 * ARM_TICKS_PER_DEGREE;
     final double ARM_WINCH_ROBOT           = 15  * ARM_TICKS_PER_DEGREE;
 
     // These constants will be used for extending the arm after some fine-tuning
     final double RETRACTED_ARM = 0;
-    final double EXTENDED_ARM = 3000 * EXTEND_TICKS_PER_DEGREE; // experimental value TBD
+    final double EXTENDED_ARM = 8000 * EXTEND_TICKS_PER_DEGREE; // experimental value TBD
 
     /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
     final double INTAKE_COLLECT    = -1.0;
@@ -115,13 +113,14 @@ public class main extends LinearOpMode {
     final double INTAKE_DEPOSIT    =  0.5;
 
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
-    final double WRIST_FOLDED_IN   = 0.8333;
-    final double WRIST_FOLDED_OUT  = 0.5;
-    //final double FOLDING_OUT = 1;
-    //final double FOLDING_IN = 0;
+    final double WRIST_FOLDED_IN   = 0;
+    final double WRIST_FOLDED_OUT  = 0.68;
+    final double WRIST_HIGH_CHAMBER = .34;
+    final  double STARTING_CONFIG = .65;
+    final double COLLECTING_POSITION = .1;
+    final double SCORING_POSITION = .34;
 
     /* A number in degrees that the triggers can adjust the arm position by */
-    final double FUDGE_FACTOR = 15 * ARM_TICKS_PER_DEGREE;
 
     /** @noinspection ConstantValue*/ /* Variables that are used to set the arm to a specific position */
     double armPosition = (int)ARM_COLLAPSED_INTO_ROBOT;
@@ -203,10 +202,11 @@ public class main extends LinearOpMode {
         wrist = hardwareMap.get(Servo.class, "wrist");
 
         tilt_left.setDirection(Servo.Direction.REVERSE);
+        wrist.setDirection(Servo.Direction.REVERSE);
 
         /* Make sure that the intake is off, and the wrist is folded in. */
         intake.setPower(INTAKE_OFF);
-        tilt_left.setPosition(WRIST_FOLDED_IN);
+        tilt_left.setPosition(COLLECTING_POSITION);
 
         /* Send telemetry message to signify robot waiting */
         telemetry.addLine("Robot Ready.");
@@ -306,7 +306,7 @@ public class main extends LinearOpMode {
             {
                 /* This is the intaking/collecting arm position */
                 armPosition = ARM_COLLECT;
-                tilt_left.setPosition(WRIST_FOLDED_OUT);
+                tilt_left.setPosition(COLLECTING_POSITION);
                 intake.setPower(INTAKE_COLLECT);
 
                 extendPositionFudgeFactor = 0;
@@ -356,11 +356,11 @@ public class main extends LinearOpMode {
 
             if (gamepad2.dpad_up)
             {
-                extendPositionFudgeFactor += .1*EXTEND_TICKS_PER_DEGREE;
+                extendPositionFudgeFactor += 3*EXTEND_TICKS_PER_DEGREE;
             }
             if (gamepad2.dpad_down)
             {
-                extendPositionFudgeFactor -= .1*EXTEND_TICKS_PER_DEGREE;
+                extendPositionFudgeFactor -= 3*EXTEND_TICKS_PER_DEGREE;
             }
 
             else if (gamepad1.dpad_up)

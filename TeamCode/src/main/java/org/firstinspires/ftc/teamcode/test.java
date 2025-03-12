@@ -91,7 +91,6 @@ public class test extends LinearOpMode
             folding.setPosition(gamepad1.left_stick_x*fold);
 
 
-
             if (gamepad1.right_bumper)
             {
                 leftR = 0;
