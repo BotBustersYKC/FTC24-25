@@ -134,6 +134,14 @@ public class Auto extends LinearOpMode {
     double func;
     double read_extender_pos;
 
+    private void Move(double left_forward, double left_rear, double right_forward, double right_rear)
+    {
+        leftDriveF.setPower(left_forward);
+        leftDriveR.setPower(left_rear);
+        rightDriveF.setPower(right_forward);
+        rightDriveR.setPower(right_rear);
+    }
+
     @Override
     public void runOpMode() {
         /*
@@ -223,6 +231,13 @@ public class Auto extends LinearOpMode {
             forward = gamepad1.left_stick_y * robotSpeed;
             rotate  = -gamepad1.right_stick_x * robotSpeed;
 
+            while (leftDriveF.isBusy())
+            {
+                telemetry.addLine("End of Sleep");
+            }
+            telemetry.update();
+            telemetry.clear();
+
             //sideways implement
             side = -gamepad1.left_stick_x * robotSpeed;
 
@@ -249,10 +264,7 @@ public class Auto extends LinearOpMode {
             }
 
             /* Set the motor power to the variables we've mixed and normalized */
-            leftDriveF.setPower(left_forward);
-            leftDriveR.setPower(left_rear);
-            rightDriveF.setPower(right_forward);
-            rightDriveR.setPower(right_rear);
+            Move(left_forward, left_rear, right_forward, right_rear);
 
             if(gamepad1.left_stick_button)
             {
