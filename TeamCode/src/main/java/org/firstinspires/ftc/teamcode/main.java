@@ -128,6 +128,7 @@ public class main extends LinearOpMode {
     double armPositionFudgeFactor;
     /** @noinspection ConstantValue*/
     double extendPosition = (int)RETRACTED_ARM;
+    double extendPositionFudgeFactor;
     double robotSpeed = 1.0; // this variable will only have values 1 and 1/4
     String robotSpeed_text = "Fast";
     double read_pos;
@@ -301,7 +302,7 @@ public class main extends LinearOpMode {
             it folds out the wrist to make sure it is in the correct orientation to intake, and it
             turns the intake on to the COLLECT mode.*/
 
-            if(gamepad2.right_bumper)
+            if(gamepad2.right_trigger > 0)
             {
                 /* This is the intaking/collecting arm position */
                 armPosition = ARM_COLLECT;
@@ -309,19 +310,11 @@ public class main extends LinearOpMode {
                 intake.setPower(INTAKE_COLLECT);
             }
 
-            else if (gamepad2.left_bumper)
-            {
-                /* This is about 20° up from the collecting position to clear the barrier
-                Note here that we don't set the wrist position or the intake power when we
-                select this "mode", this means that the intake and wrist will continue what
-                they were doing before we clicked left bumper. */
-                armPosition = ARM_CLEAR_BARRIER;
-            }
-
-            else if (gamepad2.y)
+            else if (gamepad2.left_trigger > 0)
             {
                 /* This is the correct height to score the sample in the LOW BASKET */
-                armPosition = ARM_SCORE_SAMPLE_IN_LOW; // this will be changed to high basket position, after some testing
+                armPosition = ARM_SCORE_SAMPLE_IN_LOW;
+                extendPosition = EXTENDED_ARM;
 
             }
 
@@ -340,8 +333,25 @@ public class main extends LinearOpMode {
                 armPosition = ARM_SCORE_SPECIMEN;
                 tilt_left.setPosition(WRIST_FOLDED_IN);
             }
+            if (gamepad2.left_bumper)
+            {
+                armPositionFudgeFactor += .1*ARM_TICKS_PER_DEGREE;
+            }
+            if (gamepad2.right_bumper)
+            {
+                armPositionFudgeFactor -= .1*ARM_TICKS_PER_DEGREE;
+            }
 
-            else if (gamepad2.dpad_up)
+            if (gamepad2.dpad_up)
+            {
+                extendPositionFudgeFactor += .1*EXTEND_TICKS_PER_DEGREE;
+            }
+            if (gamepad2.dpad_down)
+            {
+                extendPositionFudgeFactor -= .1*EXTEND_TICKS_PER_DEGREE;
+            }
+
+            else if (gamepad1.dpad_up)
             {
                 /* This sets the arm to vertical to hook onto the LOW RUNG for hanging */
                 armPosition = ARM_ATTACH_HANGING_HOOK;
@@ -349,7 +359,7 @@ public class main extends LinearOpMode {
                 tilt_left.setPosition(WRIST_FOLDED_IN);
             }
 
-            else if (gamepad2.dpad_down)
+            else if (gamepad1.dpad_down)
             {
                 /* this moves the arm down to lift the robot up once it has been hooked */
                 armPosition = ARM_WINCH_ROBOT;
@@ -367,7 +377,7 @@ public class main extends LinearOpMode {
             than the other, it "wins out". This variable is then multiplied by our FUDGE_FACTOR.
             The FUDGE_FACTOR is the number of degrees that we can adjust the arm by with this function. */
 
-            armPositionFudgeFactor = FUDGE_FACTOR * (gamepad2.right_trigger + (-gamepad2.left_trigger));
+            //armPositionFudgeFactor = FUDGE_FACTOR * (gamepad2.right_trigger + (-gamepad2.left_trigger));
 
             read_pos = armMotor.getCurrentPosition()/ARM_TICKS_PER_DEGREE;
             read_extender_pos = extendMotor.getCurrentPosition()/EXTEND_TICKS_PER_DEGREE;
