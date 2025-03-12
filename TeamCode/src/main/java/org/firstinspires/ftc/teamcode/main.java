@@ -98,9 +98,8 @@ public class main extends LinearOpMode {
 
     final double ARM_COLLAPSED_INTO_ROBOT  = 0;
     final double ARM_COLLECT               = 173 * ARM_TICKS_PER_DEGREE;
-    final double ARM_SCORE_SPECIMEN        = 90 * ARM_TICKS_PER_DEGREE;
-    final double ARM_SCORE_SAMPLE_IN_LOW   = 90 * ARM_TICKS_PER_DEGREE;
-    final double ARM_ATTACH_HANGING_HOOK   = 90 * ARM_TICKS_PER_DEGREE;
+    final double ARM_SCORING_POS           = 90  * ARM_TICKS_PER_DEGREE;
+
     final double ARM_WINCH_ROBOT           = 20  * ARM_TICKS_PER_DEGREE;
 
     // These constants will be used for extending the arm after some fine-tuning
@@ -133,6 +132,12 @@ public class main extends LinearOpMode {
     double read_pos;
     double func;
     double read_extender_pos;
+
+    private void Tilt_servo_handler(double position)
+    {
+        tilt_left.setPosition(position);
+        tilt_right.setPosition(position);
+    }
 
     @Override
     public void runOpMode() {
@@ -206,8 +211,9 @@ public class main extends LinearOpMode {
 
         /* Make sure that the intake is off, and the wrist is folded in. */
         intake.setPower(INTAKE_OFF);
-        tilt_left.setPosition(COLLECTING_POSITION);
-        tilt_right.setPosition(COLLECTING_POSITION);
+//        tilt_left.setPosition(COLLECTING_POSITION);
+//        tilt_right.setPosition(COLLECTING_POSITION);
+        Tilt_servo_handler(COLLECTING_POSITION);
 
         /* Send telemetry message to signify robot waiting */
         telemetry.addLine("Robot Ready.");
@@ -307,8 +313,9 @@ public class main extends LinearOpMode {
             {
                 /* This is the intaking/collecting arm position */
                 armPosition = ARM_COLLECT;
-                tilt_left.setPosition(COLLECTING_POSITION);
-                tilt_right.setPosition(COLLECTING_POSITION);
+//                tilt_left.setPosition(COLLECTING_POSITION);
+//                tilt_right.setPosition(COLLECTING_POSITION);
+                Tilt_servo_handler(COLLECTING_POSITION);
                 intake.setPower(INTAKE_COLLECT);
                 wrist.setPosition(WRIST_FOLDED_OUT);
                 extendPosition = RETRACTED_ARM;
@@ -320,10 +327,11 @@ public class main extends LinearOpMode {
             else if (gamepad2.left_trigger > 0)
             {
                 /* This is the correct height to score the sample in the LOW BASKET */
-                armPosition = ARM_SCORE_SAMPLE_IN_LOW;
+                armPosition = ARM_SCORING_POS;
                 extendPosition = EXTENDED_ARM;
-                tilt_left.setPosition(SCORING_POSITION);
-                tilt_right.setPosition(SCORING_POSITION);
+//                tilt_left.setPosition(SCORING_POSITION);
+//                tilt_right.setPosition(SCORING_POSITION);
+                Tilt_servo_handler(SCORING_POSITION);
                 wrist.setPosition(WRIST_FOLDED_OUT);
 
                 extendPositionFudgeFactor = 0;
@@ -336,8 +344,9 @@ public class main extends LinearOpMode {
                 back to folded inside the robot. This is also the starting configuration */
                 armPosition = ARM_COLLAPSED_INTO_ROBOT;
                 intake.setPower(INTAKE_OFF);
-                tilt_left.setPosition(STARTING_CONFIG);
-                tilt_right.setPosition(STARTING_CONFIG);
+//                tilt_left.setPosition(STARTING_CONFIG);
+//                tilt_right.setPosition(STARTING_CONFIG);
+                Tilt_servo_handler(STARTING_CONFIG);
                 wrist.setPosition(WRIST_FOLDED_OUT);
                 extendPosition = RETRACTED_ARM;
 
@@ -348,9 +357,10 @@ public class main extends LinearOpMode {
             else if (gamepad2.dpad_right)
             {
                 /* This is the correct height to score SPECIMEN on the HIGH CHAMBER */
-                armPosition = ARM_SCORE_SPECIMEN;
-                tilt_left.setPosition(SCORING_POSITION);
-                tilt_right.setPosition(SCORING_POSITION);
+                armPosition = ARM_SCORING_POS;
+//                tilt_left.setPosition(SCORING_POSITION);
+//                tilt_right.setPosition(SCORING_POSITION);
+                Tilt_servo_handler(SCORING_POSITION);
                 wrist.setPosition(WRIST_HIGH_CHAMBER);
                 extendPosition = EXTENDED_ARM;
 
@@ -379,10 +389,11 @@ public class main extends LinearOpMode {
             else if (gamepad1.dpad_up)
             {
                 /* This sets the arm to vertical to hook onto the LOW RUNG for hanging */
-                armPosition = ARM_ATTACH_HANGING_HOOK;
+                armPosition = ARM_SCORING_POS;
                 intake.setPower(INTAKE_OFF);
-                tilt_left.setPosition(SCORING_POSITION);
-                tilt_right.setPosition(SCORING_POSITION);
+//                tilt_left.setPosition(SCORING_POSITION);
+//                tilt_right.setPosition(SCORING_POSITION);
+                Tilt_servo_handler(SCORING_POSITION);
                 wrist.setPosition(WRIST_FOLDED_IN);
 
                 extendPositionFudgeFactor = 0;
@@ -395,8 +406,9 @@ public class main extends LinearOpMode {
                 armPosition = ARM_WINCH_ROBOT;
                 extendPosition = RETRACTED_ARM;
                 intake.setPower(INTAKE_OFF);
-                tilt_left.setPosition(SCORING_POSITION);
-                tilt_right.setPosition(SCORING_POSITION);
+//                tilt_left.setPosition(SCORING_POSITION);
+//                tilt_right.setPosition(SCORING_POSITION);
+                Tilt_servo_handler(SCORING_POSITION);
                 wrist.setPosition(WRIST_FOLDED_OUT);
 
                 extendPositionFudgeFactor = 0;

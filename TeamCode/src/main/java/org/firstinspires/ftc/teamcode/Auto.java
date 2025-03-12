@@ -103,11 +103,11 @@ public class Auto extends LinearOpMode {
     as far from the starting position, decrease it. */
 
     final double ARM_COLLAPSED_INTO_ROBOT  = 0;
-    final double ARM_COLLECT               = 250 * ARM_TICKS_PER_DEGREE;
-    final double ARM_SCORE_SPECIMEN        = 160 * ARM_TICKS_PER_DEGREE;
-    final double ARM_SCORE_SAMPLE_IN_LOW   = 160 * ARM_TICKS_PER_DEGREE;
-    final double ARM_ATTACH_HANGING_HOOK   = 100 * ARM_TICKS_PER_DEGREE;
-    final double ARM_WINCH_ROBOT           = 15  * ARM_TICKS_PER_DEGREE;
+    final double ARM_COLLECT               = 173 * ARM_TICKS_PER_DEGREE;
+    final double ARM_SCORING_POS           = 90  * ARM_TICKS_PER_DEGREE;
+
+    final double ARM_WINCH_ROBOT           = 20  * ARM_TICKS_PER_DEGREE;
+    final double ARM_STARTING_CONFIG       = 50  * ARM_TICKS_PER_DEGREE;
 
     // These constants will be used for extending the arm after some fine-tuning
     final double RETRACTED_ARM = 0;
@@ -130,15 +130,13 @@ public class Auto extends LinearOpMode {
 
     /** @noinspection ConstantValue*/ /* Variables that are used to set the arm to a specific position */
     double armPosition = (int)ARM_COLLAPSED_INTO_ROBOT;
-    double armPositionFudgeFactor;
     /** @noinspection ConstantValue*/
     double extendPosition = (int)RETRACTED_ARM;
-    double extendPositionFudgeFactor;
     double read_pos;
     double func;
     double read_extender_pos;
 
-    private void Move_Distance_cm(double left_forward, double left_rear, double right_forward, double right_rear)
+    private void Move_Distance_cm(double left_forward, double left_rear, double right_forward, double right_rear, double power)
     {
         int left_F = (int) (left_forward*ROTATION_TICKS_PER_DEGREE);
         int left_R = (int) (left_rear*ROTATION_TICKS_PER_DEGREE);
@@ -151,12 +149,55 @@ public class Auto extends LinearOpMode {
         rightDriveF.setTargetPosition(right_F);
         rightDriveR.setTargetPosition(right_R);
 
+
+        ((DcMotorEx) leftDriveF).setVelocity(power);
+        ((DcMotorEx) leftDriveR).setVelocity(power);
+        ((DcMotorEx) rightDriveF).setVelocity(power);
+        ((DcMotorEx) rightDriveR).setVelocity(power);
+
         while (leftDriveF.isBusy())
         {
             telemetry.addLine("Sleep");
-            telemetry.update();
-            telemetry.clear();
         }
+        telemetry.update();
+        telemetry.clear();
+
+        telemetry.addLine("End of Sleep");
+        telemetry.update();
+
+        leftDriveF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftDriveR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDriveF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDriveR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftDriveF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftDriveR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDriveF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDriveR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    private void Arm_handler(double Target_Position)
+    {
+        armMotor.setTargetPosition((int) Target_Position);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        while (armMotor.getCurrentPosition() < armMotor.getTargetPosition() && armMotor.getTargetPosition() < 90)
+        {
+            read_pos = armMotor.getCurrentPosition()/ARM_TICKS_PER_DEGREE;
+            func = 1100*cos(PI*read_pos/90)+1900;
+            ((DcMotorEx) armMotor).setVelocity(func);
+        }
+
+        if (armMotor.getCurrentPosition() >= 90)
+        {
+            ((DcMotorEx) armMotor).setVelocity(800);
+        }
+    }
+
+    private void Tilt_servo_handler(double position)
+    {
+        tilt_left.setPosition(position);
+        tilt_right.setPosition(position);
     }
 
     @Override
@@ -182,11 +223,15 @@ public class Auto extends LinearOpMode {
         rightDriveF.setDirection(DcMotor.Direction.REVERSE);
         rightDriveR.setDirection(DcMotor.Direction.REVERSE);
 
-
         leftDriveF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftDriveR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightDriveF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightDriveR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftDriveF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftDriveR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDriveF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDriveR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         /* Setting zeroPowerBehavior to BRAKE enables a "brake mode". This causes the motor to slow down
         much faster when it is coasting. This creates a much more controllable drivetrain. As the robot
@@ -228,8 +273,10 @@ public class Auto extends LinearOpMode {
 
         /* Make sure that the intake is off, and the wrist is folded in. */
         intake.setPower(INTAKE_OFF);
-        tilt_left.setPosition(COLLECTING_POSITION);
-        tilt_right.setPosition(COLLECTING_POSITION);
+
+        Tilt_servo_handler(STARTING_CONFIG);
+        wrist.setPosition(WRIST_FOLDED_OUT);
+        Arm_handler(ARM_STARTING_CONFIG);
 
         /* Send telemetry message to signify robot waiting */
         telemetry.addLine("Robot Ready.");
@@ -242,15 +289,51 @@ public class Auto extends LinearOpMode {
         if (opModeIsActive()) {
 
 
-            Move_Distance_cm(5, 5, 5, 5);
+            Move_Distance_cm(5, 5, 5, 5, 3000);
 
+            Move_Distance_cm(5, 5, 5, 5, 3000);
 
-            telemetry.addLine("End of Sleep");
-            telemetry.update();
+            Arm_handler(ARM_COLLECT);
+            Tilt_servo_handler(COLLECTING_POSITION);
+            intake.setPower(INTAKE_COLLECT);
 
+            Move_Distance_cm(5, 5, 5, 5, 3000);
 
+            Arm_handler(ARM_SCORING_POS);
 
+            Move_Distance_cm(5, 5, 5, 5, 3000);
 
+            Move_Distance_cm(5, 5, 5, 5, 3000);  //rotation of robot without new method
+
+            Move_Distance_cm(5, 5, 5, 5, 3000);
+
+            Arm_handler(ARM_COLLECT);
+            intake.setPower(INTAKE_DEPOSIT);
+
+            Arm_handler(ARM_SCORING_POS);
+            intake.setPower(INTAKE_OFF);
+
+            Move_Distance_cm(5, 5, 5, 5, 3000);  //rotation of robot without new method
+
+            Move_Distance_cm(5, 5, 5, 5, 3000);
+
+            Arm_handler(ARM_COLLECT);
+            Tilt_servo_handler(COLLECTING_POSITION);
+            intake.setPower(INTAKE_COLLECT);
+
+            Move_Distance_cm(5, 5, 5, 5, 3000);
+
+            Arm_handler(ARM_SCORING_POS);
+
+            Move_Distance_cm(5, 5, 5, 5, 3000);  //rotation of robot without new method
+
+            Move_Distance_cm(5, 5, 5, 5, 3000);
+
+            Arm_handler(ARM_COLLECT);
+            intake.setPower(INTAKE_DEPOSIT);
+
+            Arm_handler(ARM_SCORING_POS);
+            intake.setPower(INTAKE_OFF);
 
 
             /* Here we handle the three buttons that have direct control of the intake speed.
@@ -270,17 +353,6 @@ public class Auto extends LinearOpMode {
             three if statements, then it will set the intake servo's power to multiple speeds in
             one cycle. Which can cause strange behavior. */
 
-            if (gamepad2.x) {
-                intake.setPower(INTAKE_COLLECT);                            //changed buttons, for a bit more intuitive approach for the drivers
-            }
-            else if (gamepad2.b) {
-                intake.setPower(INTAKE_OFF);
-            }
-            else if (gamepad2.a) {
-                intake.setPower(INTAKE_DEPOSIT);
-            }
-
-
 
             /* Here we implement a set of if else statements to set our arm to different scoring positions.
             We check to see if a specific button is pressed, and then move the arm (and sometimes
@@ -289,82 +361,7 @@ public class Auto extends LinearOpMode {
             it folds out the wrist to make sure it is in the correct orientation to intake, and it
             turns the intake on to the COLLECT mode.*/
 
-            if(gamepad2.right_trigger > 0)
-            {
-                /* This is the intaking/collecting arm position */
-                armPosition = ARM_COLLECT;
-                tilt_left.setPosition(COLLECTING_POSITION);
-                intake.setPower(INTAKE_COLLECT);
 
-                extendPositionFudgeFactor = 0;
-                armPositionFudgeFactor = 0;
-            }
-
-            else if (gamepad2.left_trigger > 0)
-            {
-                /* This is the correct height to score the sample in the LOW BASKET */
-                armPosition = ARM_SCORE_SAMPLE_IN_LOW;
-                extendPosition = EXTENDED_ARM;
-
-                extendPositionFudgeFactor = 0;
-                armPositionFudgeFactor = 0;
-            }
-
-            else if (gamepad2.dpad_left)
-            {
-                /* This turns off the intake, folds in the wrist, and moves the arm
-                back to folded inside the robot. This is also the starting configuration */
-                armPosition = ARM_COLLAPSED_INTO_ROBOT;
-                intake.setPower(INTAKE_OFF);
-                tilt_left.setPosition(WRIST_FOLDED_IN);
-
-                extendPositionFudgeFactor = 0;
-                armPositionFudgeFactor = 0;
-            }
-
-            else if (gamepad2.dpad_right)
-            {
-                /* This is the correct height to score SPECIMEN on the HIGH CHAMBER */
-                armPosition = ARM_SCORE_SPECIMEN;
-                tilt_left.setPosition(WRIST_FOLDED_IN);
-
-                extendPositionFudgeFactor = 0;
-                armPositionFudgeFactor = 0;
-            }
-
-            if (gamepad2.left_bumper)
-            {
-                armPositionFudgeFactor += .1*ARM_TICKS_PER_DEGREE;
-            }
-            if (gamepad2.right_bumper)
-            {
-                armPositionFudgeFactor -= .1*ARM_TICKS_PER_DEGREE;
-            }
-
-            if (gamepad2.dpad_up)
-            {
-                extendPositionFudgeFactor += 3*EXTEND_TICKS_PER_DEGREE;
-            }
-            if (gamepad2.dpad_down)
-            {
-                extendPositionFudgeFactor -= 3*EXTEND_TICKS_PER_DEGREE;
-            }
-
-            else if (gamepad1.dpad_up)
-            {
-                /* This sets the arm to vertical to hook onto the LOW RUNG for hanging */
-                armPosition = ARM_ATTACH_HANGING_HOOK;
-                intake.setPower(INTAKE_OFF);
-                tilt_left.setPosition(WRIST_FOLDED_IN);
-            }
-
-            else if (gamepad1.dpad_down)
-            {
-                /* this moves the arm down to lift the robot up once it has been hooked */
-                armPosition = ARM_WINCH_ROBOT;
-                intake.setPower(INTAKE_OFF);
-                tilt_left.setPosition(WRIST_FOLDED_IN);
-            }
 
             // adding extending functionality to the joysticks of gamepad2
 
@@ -377,59 +374,6 @@ public class Auto extends LinearOpMode {
             The FUDGE_FACTOR is the number of degrees that we can adjust the arm by with this function. */
 
             //armPositionFudgeFactor = FUDGE_FACTOR * (gamepad2.right_trigger + (-gamepad2.left_trigger));
-
-            read_pos = armMotor.getCurrentPosition()/ARM_TICKS_PER_DEGREE;
-            read_extender_pos = extendMotor.getCurrentPosition()/EXTEND_TICKS_PER_DEGREE;
-            /* Here we set the target position of our arm to match the variable that was selected
-            by the driver.
-            We also set the target velocity (speed) the motor runs at, and use setMode to run it.*/
-            armMotor.setTargetPosition((int) (armPosition + armPositionFudgeFactor));
-
-
-            //extend limits
-
-
-            if (read_pos > 115 && read_extender_pos > 1500)
-            {
-                armMotor.setTargetPosition((int) (115*ARM_TICKS_PER_DEGREE));
-                ((DcMotorEx) armMotor).setVelocity(800);
-                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            if (read_pos < 70 && read_extender_pos > 1500)
-            {
-                armMotor.setTargetPosition((int) (70*ARM_TICKS_PER_DEGREE));
-                ((DcMotorEx) armMotor).setVelocity(800);
-                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-
-            func = 1100*cos(PI*read_pos/90)+1900;
-
-            if (read_pos < 90)
-            {
-                ((DcMotorEx) armMotor).setVelocity((int) func);
-            }
-
-            else if (read_pos >= 90)
-            {
-                ((DcMotorEx) armMotor).setVelocity(800);
-            }
-
-            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-            if (gamepad2.left_stick_button)
-            {
-                extendPosition = EXTENDED_ARM;
-            }
-
-            if (gamepad2.right_stick_button)
-            {
-                extendPosition = RETRACTED_ARM;
-            }
-
-            extendMotor.setTargetPosition((int)extendPosition);
-            ((DcMotorEx) extendMotor).setVelocity(2100);
-            extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             /* TECH TIP: Encoders, integers, and doubles
             Encoders report when the motor has moved a specified angle. They send out pulses which
