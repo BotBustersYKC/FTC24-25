@@ -307,49 +307,49 @@ public class auto_test extends LinearOpMode {
 
             Move_Distance_cm(100, 100, 100, 100, 800);
 
-            //Move_Distance_cm(50, -50, -50, 50, 800);
+            Move_Distance_cm(50, -50, -50, 50, 800);
 
-//            Arm_handler(ARM_COLLECT);
-//            Tilt_servo_handler(COLLECTING_POSITION);
-//            intake.setPower(INTAKE_COLLECT);
-//
-//            Move_Distance_cm(50, 50, 50, 50, 800);
-//
-//            Arm_handler(ARM_SCORING_POS);
-//
-//            Move_Distance_cm(50, 50, 50, 50, 800);
-//
-//            Move_Distance_cm(50, 50, -50, -50, 800);  //rotation of robot without new method
-//
-//            Move_Distance_cm(50, 50, 50, 50, 800);
-//
-//            Arm_handler(ARM_COLLECT);
-//            intake.setPower(INTAKE_DEPOSIT);
-//
-//            Arm_handler(ARM_SCORING_POS);
-//            intake.setPower(INTAKE_OFF);
-//
-//            Move_Distance_cm(50, 50, -50, -50, 800);  //rotation of robot without new method
-//
-//            Move_Distance_cm(50, 50, 50, 50, 800);
-//
-//            Arm_handler(ARM_COLLECT);
-//            Tilt_servo_handler(COLLECTING_POSITION);
-//            intake.setPower(INTAKE_COLLECT);
-//
-//            Move_Distance_cm(50, 50, 50, 50, 800);
-//
-//            Arm_handler(ARM_SCORING_POS);
-//
-//            Move_Distance_cm(50, 50, -50, -50, 800);  //rotation of robot without new method
-//
-//            Move_Distance_cm(50, 50, 50, 50, 800);
-//
-//            Arm_handler(ARM_COLLECT);
-//            intake.setPower(INTAKE_DEPOSIT);
-//
-//            Arm_handler(ARM_SCORING_POS);
-//            intake.setPower(INTAKE_OFF);
+            Arm_handler(ARM_COLLECT);
+            Tilt_servo_handler(COLLECTING_POSITION);
+            intake.setPower(INTAKE_COLLECT);
+
+            Move_Distance_cm(50, 50, 50, 50, 800);
+
+            Arm_handler(ARM_SCORING_POS);
+
+            Move_Distance_cm(50, 50, 50, 50, 800);
+
+            Move_Distance_cm(50, 50, -50, -50, 800);  //rotation of robot without new method
+
+            Move_Distance_cm(50, 50, 50, 50, 800);
+
+            Arm_handler(ARM_COLLECT);
+            intake.setPower(INTAKE_DEPOSIT);
+
+            Arm_handler(ARM_SCORING_POS);
+            intake.setPower(INTAKE_OFF);
+
+            Move_Distance_cm(50, 50, -50, -50, 800);  //rotation of robot without new method
+
+            Move_Distance_cm(50, 50, 50, 50, 800);
+
+            Arm_handler(ARM_COLLECT);
+            Tilt_servo_handler(COLLECTING_POSITION);
+            intake.setPower(INTAKE_COLLECT);
+
+            Move_Distance_cm(50, 50, 50, 50, 800);
+
+            Arm_handler(ARM_SCORING_POS);
+
+            Move_Distance_cm(50, 50, -50, -50, 800);  //rotation of robot without new method
+
+            Move_Distance_cm(50, 50, 50, 50, 800);
+
+            Arm_handler(ARM_COLLECT);
+            intake.setPower(INTAKE_DEPOSIT);
+
+            Arm_handler(ARM_SCORING_POS);
+            intake.setPower(INTAKE_OFF);
 
 
             /* Here we handle the three buttons that have direct control of the intake speed.
