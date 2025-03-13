@@ -47,7 +47,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
  */
 
 
-/** @noinspection InfiniteLoopStatement*/
 @Autonomous(name="Auto_test", group="Robot")
 //@Disabled
 public class auto_test extends LinearOpMode {
@@ -141,17 +140,33 @@ public class auto_test extends LinearOpMode {
     /** @noinspection SameParameterValue*/
     private void Move_Distance_cm(double left_forward, double left_rear, double right_forward, double right_rear, double power)
     {
-        int left_F = (int) (left_forward*ROTATION_TICKS_PER_DEGREE);
-        int left_R = (int) (left_rear*ROTATION_TICKS_PER_DEGREE);
-        int right_F = (int) (right_forward*ROTATION_TICKS_PER_DEGREE);
-        int right_R = (int) (right_rear*ROTATION_TICKS_PER_DEGREE);
+
+        ((DcMotorEx) leftDriveF).setMotorEnable();
+        ((DcMotorEx) leftDriveR).setMotorEnable();
+        ((DcMotorEx) rightDriveF).setMotorEnable();
+        ((DcMotorEx) rightDriveR).setMotorEnable();
+        telemetry.addLine("Enabled");
+        telemetry.update();
+
+        leftDriveF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftDriveR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDriveF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDriveR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        telemetry.addLine("RESET");
+        telemetry.update();
+
+        int left_F = (int) (-1*left_forward*ROTATION_TICKS_PER_DEGREE);
+        int left_R = (int) (-1*left_rear*ROTATION_TICKS_PER_DEGREE);
+        int right_F = (int) (-1*right_forward*ROTATION_TICKS_PER_DEGREE);
+        int right_R = (int) (-1*right_rear*ROTATION_TICKS_PER_DEGREE);
 
         leftDriveF.setTargetPosition(left_F);
         leftDriveR.setTargetPosition(left_R);
         rightDriveF.setTargetPosition(right_F);
         rightDriveR.setTargetPosition(right_R);
 
-
+        telemetry.addLine("SET TARGET");
+        telemetry.update();
         do
         {
             ((DcMotorEx) leftDriveF).setVelocity(power);
@@ -164,27 +179,17 @@ public class auto_test extends LinearOpMode {
             rightDriveF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightDriveR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            telemetry.addData("LEFT  F degrees: ", leftDriveF.getTargetPosition()/ROTATION_TICKS_PER_DEGREE);
+            telemetry.addData("LEFT  F degrees: ", leftDriveF.getCurrentPosition()/ROTATION_TICKS_PER_DEGREE);
             telemetry.addData("LEFT R degrees: ", leftDriveR.getCurrentPosition()/ROTATION_TICKS_PER_DEGREE);
-            telemetry.addData("RIGHT F degrees: ", rightDriveF.getTargetPosition()/ROTATION_TICKS_PER_DEGREE);
+            telemetry.addData("RIGHT F degrees: ", rightDriveF.getCurrentPosition()/ROTATION_TICKS_PER_DEGREE);
             telemetry.addData("RIGHT R degrees: ", rightDriveR.getCurrentPosition()/ROTATION_TICKS_PER_DEGREE);
             telemetry.update();
         }
-        while (leftDriveF.isBusy());
-        leftDriveF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftDriveR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDriveF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDriveR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        while (leftDriveF.isBusy())
-//        {
-//            telemetry.addData("LEFT  F degrees: ", leftDriveF.getTargetPosition()/ROTATION_TICKS_PER_DEGREE);
-//            telemetry.addData("LEFT R degrees: ", leftDriveR.getCurrentPosition()/ROTATION_TICKS_PER_DEGREE);
-//            telemetry.addData("RIGHT F degrees: ", rightDriveF.getTargetPosition()/ROTATION_TICKS_PER_DEGREE);
-//            telemetry.addData("RIGHT R degrees: ", rightDriveR.getCurrentPosition()/ROTATION_TICKS_PER_DEGREE);
-//            telemetry.update();
-//        }
-//        telemetry.update();
-//        telemetry.clear();
+        while (rightDriveR.isBusy());
+        ((DcMotorEx) leftDriveF).setMotorDisable();
+        ((DcMotorEx) leftDriveR).setMotorDisable();
+        ((DcMotorEx) rightDriveF).setMotorDisable();
+        ((DcMotorEx) rightDriveR).setMotorDisable();
 
         telemetry.addLine("End of Sleep");
         telemetry.update();
@@ -194,19 +199,20 @@ public class auto_test extends LinearOpMode {
     private void Arm_handler(double Target_Position)
     {
         armMotor.setTargetPosition((int) Target_Position);
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        while (armMotor.getCurrentPosition() < armMotor.getTargetPosition() && armMotor.getTargetPosition() < 90)
+        do
         {
-            read_pos = armMotor.getCurrentPosition()/ARM_TICKS_PER_DEGREE;
-            func = 1100*cos(PI*read_pos/90)+1900;
-            ((DcMotorEx) armMotor).setVelocity(func);
-        }
+            if ( armMotor.getCurrentPosition() < 90) {
+                read_pos = armMotor.getCurrentPosition() / ARM_TICKS_PER_DEGREE;
+                func = 1100 * cos(PI * read_pos / 90) + 1900;
+                ((DcMotorEx) armMotor).setVelocity(func);
+            }
 
-        if (armMotor.getCurrentPosition() >= 90)
-        {
-            ((DcMotorEx) armMotor).setVelocity(800);
+            if (armMotor.getCurrentPosition() >= 90) {
+                ((DcMotorEx) armMotor).setVelocity(800);
+            }
+            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
+        while (armMotor.isBusy());
     }
 
     /** @noinspection SameParameterValue*/
@@ -231,13 +237,12 @@ public class auto_test extends LinearOpMode {
         armMotor   = hardwareMap.get(DcMotor.class, "left_arm"); //the arm motor  //1E
         extendMotor = hardwareMap.get(DcMotor.class, "extender"); // extender motor //0E
 
-
         /* Most skid-steer/differential drive robots require reversing one motor to drive forward.
         for this robot, we reverse the right motor.*/
-        leftDriveF.setDirection(DcMotor.Direction.REVERSE);
-        leftDriveR.setDirection(DcMotor.Direction.REVERSE);
-        rightDriveF.setDirection(DcMotor.Direction.FORWARD);
-        rightDriveR.setDirection(DcMotor.Direction.FORWARD);
+        leftDriveF.setDirection(DcMotor.Direction.FORWARD);
+        leftDriveR.setDirection(DcMotor.Direction.FORWARD);
+        rightDriveF.setDirection(DcMotor.Direction.REVERSE);
+        rightDriveR.setDirection(DcMotor.Direction.REVERSE);
 
         leftDriveF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftDriveR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -300,32 +305,23 @@ public class auto_test extends LinearOpMode {
         if (opModeIsActive()) {
 
 
-            Move_Distance_cm(100, -100, 100, -100, 300);
+            Move_Distance_cm(100, 100, 100, 100, 800);
 
-            while (true)
-            {
-                telemetry.addData("LEFT  F degrees: ", leftDriveF.getTargetPosition()/ROTATION_TICKS_PER_DEGREE);
-                telemetry.addData("LEFT R degrees: ", leftDriveR.getCurrentPosition()/ROTATION_TICKS_PER_DEGREE);
-                telemetry.addData("RIGHT F degrees: ", rightDriveF.getTargetPosition()/ROTATION_TICKS_PER_DEGREE);
-                telemetry.addData("RIGHT R degrees: ", rightDriveR.getCurrentPosition()/ROTATION_TICKS_PER_DEGREE);
-                telemetry.update();
-            }
+            //Move_Distance_cm(50, -50, -50, 50, 800);
 
-//            Move_Distance_cm(5, -5, -5, 5, 3000);
-//
 //            Arm_handler(ARM_COLLECT);
 //            Tilt_servo_handler(COLLECTING_POSITION);
 //            intake.setPower(INTAKE_COLLECT);
 //
-//            Move_Distance_cm(5, 5, 5, 5, 3000);
+//            Move_Distance_cm(50, 50, 50, 50, 800);
 //
 //            Arm_handler(ARM_SCORING_POS);
 //
-//            Move_Distance_cm(5, 5, 5, 5, 3000);
+//            Move_Distance_cm(50, 50, 50, 50, 800);
 //
-//            Move_Distance_cm(5, 5, -5, -5, 3000);  //rotation of robot without new method
+//            Move_Distance_cm(50, 50, -50, -50, 800);  //rotation of robot without new method
 //
-//            Move_Distance_cm(5, 5, 5, 5, 3000);
+//            Move_Distance_cm(50, 50, 50, 50, 800);
 //
 //            Arm_handler(ARM_COLLECT);
 //            intake.setPower(INTAKE_DEPOSIT);
@@ -333,21 +329,21 @@ public class auto_test extends LinearOpMode {
 //            Arm_handler(ARM_SCORING_POS);
 //            intake.setPower(INTAKE_OFF);
 //
-//            Move_Distance_cm(5, 5, -5, -5, 3000);  //rotation of robot without new method
+//            Move_Distance_cm(50, 50, -50, -50, 800);  //rotation of robot without new method
 //
-//            Move_Distance_cm(5, 5, 5, 5, 3000);
+//            Move_Distance_cm(50, 50, 50, 50, 800);
 //
 //            Arm_handler(ARM_COLLECT);
 //            Tilt_servo_handler(COLLECTING_POSITION);
 //            intake.setPower(INTAKE_COLLECT);
 //
-//            Move_Distance_cm(5, 5, 5, 5, 3000);
+//            Move_Distance_cm(50, 50, 50, 50, 800);
 //
 //            Arm_handler(ARM_SCORING_POS);
 //
-//            Move_Distance_cm(5, 5, -5, -5, 3000);  //rotation of robot without new method
+//            Move_Distance_cm(50, 50, -50, -50, 800);  //rotation of robot without new method
 //
-//            Move_Distance_cm(5, 5, 5, 5, 3000);
+//            Move_Distance_cm(50, 50, 50, 50, 800);
 //
 //            Arm_handler(ARM_COLLECT);
 //            intake.setPower(INTAKE_DEPOSIT);
