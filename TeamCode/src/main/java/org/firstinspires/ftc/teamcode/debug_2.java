@@ -17,8 +17,8 @@ public class debug_2 extends LinearOpMode
     public CRServo Servo4 = null;
     public DcMotor extendMotor = null;
     public DcMotor armMotor = null;
-    double Servo1_pos;
-    double Servo2_pos;
+//    double Servo1_pos;
+//    double Servo2_pos;
     double position;
     double servo_3_pos;
     double extend;
@@ -51,39 +51,39 @@ public class debug_2 extends LinearOpMode
         waitForStart();
         while (opModeIsActive())
         {
-            Servo1.setPosition(position);
-            Servo2.setPosition(position);
-
+//            Servo1.setPosition(position);
+//            Servo2.setPosition(position);
+//
             ((DcMotorEx) extendMotor).setMotorEnable();
-
-            if (gamepad1.x)
-            {
-                position += .005;
-            }
-            if (gamepad1.y)
-            {
-                position -= .005;
-            }
-
-
-            Servo3.setPosition(servo_3_pos);
-            if (gamepad1.dpad_up)
-            {
-                servo_3_pos += .005;
-            }
-            if (gamepad1.dpad_down)
-            {
-                servo_3_pos -= .005;
-            }
-
-            if (gamepad1.dpad_left)
-            {
-                Servo4.setPower(1);
-            }
-            if (gamepad1.dpad_right)
-            {
-                Servo4.setPower(0);
-            }
+//
+//            if (gamepad1.x)
+//            {
+//                position += .005;
+//            }
+//            if (gamepad1.y)
+//            {
+//                position -= .005;
+//            }
+//
+//
+//            Servo3.setPosition(servo_3_pos);
+//            if (gamepad1.dpad_up)
+//            {
+//                servo_3_pos += .005;
+//            }
+//            if (gamepad1.dpad_down)
+//            {
+//                servo_3_pos -= .005;
+//            }
+//
+//            if (gamepad1.dpad_left)
+//            {
+//                Servo4.setPower(1);
+//            }
+//            if (gamepad1.dpad_right)
+//            {
+//                Servo4.setPower(0);
+//            }
             if (gamepad1.left_bumper)
             {
                 extend += 5*EXTEND_TICKS_PER_DEGREE;
@@ -92,15 +92,19 @@ public class debug_2 extends LinearOpMode
             {
                 extend -= 5*EXTEND_TICKS_PER_DEGREE;
             }
-
-            if (gamepad1.a)
+            if (extend <= 0)
             {
-                rotate += .3*ARM_TICKS_PER_DEGREE;
+                extend = 0;
             }
-            if (gamepad1.b)
-            {
-                rotate -= .3*ARM_TICKS_PER_DEGREE;
-            }
+//
+//            if (gamepad1.a)
+//            {
+//                rotate += .3*ARM_TICKS_PER_DEGREE;
+//            }
+//            if (gamepad1.b)
+//            {
+//                rotate -= .3*ARM_TICKS_PER_DEGREE;
+//            }
 
             ((DcMotorEx) armMotor).setCurrentAlert(5, CurrentUnit.AMPS);
             ((DcMotorEx) extendMotor).setCurrentAlert(5,CurrentUnit.AMPS);
@@ -114,9 +118,9 @@ public class debug_2 extends LinearOpMode
             ((DcMotorEx) extendMotor).setVelocity(2100);
             extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            armMotor.setTargetPosition((int) rotate);
-            ((DcMotorEx) armMotor).setVelocity(2100);
-            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            armMotor.setTargetPosition((int) rotate);
+//            ((DcMotorEx) armMotor).setVelocity(2100);
+//            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             telemetry.addData("Position:", position);
             telemetry.addData("Rotating Servo:", servo_3_pos);
