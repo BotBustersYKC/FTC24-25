@@ -136,6 +136,7 @@ public class Auto extends LinearOpMode {
     double func;
     double read_extender_pos;
 
+    /** @noinspection SameParameterValue*/
     private void Move_Distance_cm(double left_forward, double left_rear, double right_forward, double right_rear, double power)
     {
         int left_F = (int) (left_forward*ROTATION_TICKS_PER_DEGREE);
