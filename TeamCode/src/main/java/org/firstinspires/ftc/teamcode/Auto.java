@@ -47,7 +47,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
  */
 
 
-/** @noinspection ALL*/
 @Autonomous(name="Auto", group="Robot")
 //@Disabled
 public class Auto extends LinearOpMode {
@@ -221,6 +220,13 @@ public class Auto extends LinearOpMode {
     {
         tilt_left.setPosition(position);
         tilt_right.setPosition(position);
+
+        while (tilt_right.getPosition() != position && tilt_left.getPosition() != position)
+        {
+            telemetry.addLine("sleep");
+        }
+        telemetry.update();
+        telemetry.clear();
     }
 
     @Override
