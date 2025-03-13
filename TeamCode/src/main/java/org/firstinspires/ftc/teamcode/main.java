@@ -368,11 +368,11 @@ public class main extends LinearOpMode {
                 armPositionFudgeFactor = 0;
             }
 
-            if (gamepad2.left_bumper)
+            if (gamepad2.right_bumper)
             {
                 armPositionFudgeFactor += .1*ARM_TICKS_PER_DEGREE;
             }
-            if (gamepad2.right_bumper)
+            if (gamepad2.left_bumper)
             {
                 armPositionFudgeFactor -= .1*ARM_TICKS_PER_DEGREE;
             }
