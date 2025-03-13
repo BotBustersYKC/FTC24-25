@@ -104,7 +104,7 @@ public class main extends LinearOpMode {
 
     // These constants will be used for extending the arm after some fine-tuning
     final double RETRACTED_ARM = 0;
-    final double EXTENDED_ARM = 8000 * EXTEND_TICKS_PER_DEGREE; // experimental value TBD
+    final double EXTENDED_ARM = 3000 * EXTEND_TICKS_PER_DEGREE; // experimental value TBD
 
     /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
     final double INTAKE_COLLECT    = -1.0;
@@ -137,6 +137,13 @@ public class main extends LinearOpMode {
     {
         tilt_left.setPosition(position);
         tilt_right.setPosition(position);
+
+        while (tilt_right.getPosition() != position-.05 && tilt_left.getPosition() != position-.05)
+        {
+            telemetry.addLine("sleep");
+        }
+        telemetry.update();
+        telemetry.clear();
     }
 
     @Override
@@ -293,10 +300,10 @@ public class main extends LinearOpMode {
             if (gamepad2.x) {
                 intake.setPower(INTAKE_COLLECT);                            //changed buttons, for a bit more intuitive approach for the drivers
             }
-            else if (gamepad2.b) {
+            else if (gamepad2.a) {
                 intake.setPower(INTAKE_OFF);
             }
-            else if (gamepad2.a) {
+            else if (gamepad2.b) {
                 intake.setPower(INTAKE_DEPOSIT);
             }
 
@@ -370,11 +377,11 @@ public class main extends LinearOpMode {
 
             if (gamepad2.right_bumper)
             {
-                armPositionFudgeFactor += .1*ARM_TICKS_PER_DEGREE;
+                armPositionFudgeFactor += .5*ARM_TICKS_PER_DEGREE;
             }
             if (gamepad2.left_bumper)
             {
-                armPositionFudgeFactor -= .1*ARM_TICKS_PER_DEGREE;
+                armPositionFudgeFactor -= .5*ARM_TICKS_PER_DEGREE;
             }
 
             if (gamepad2.dpad_up)
