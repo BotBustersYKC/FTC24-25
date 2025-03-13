@@ -89,8 +89,7 @@ public class Auto extends LinearOpMode {
     final double ROTATION_TICKS_PER_DEGREE =
             28 //encoder ticks
                     *3591.0/187.0 // exact ratio
-                    *1/360.0
-                    *48.0/10.0; // ticks per degree
+                    *1/360.0; // ticks per degree
     /* These constants hold the position that the arm is commanded to run to.
     These are relative to where the arm was located when you start the OpMode. So make sure the
     arm is reset to collapsed inside the robot before you start the program.
@@ -144,7 +143,6 @@ public class Auto extends LinearOpMode {
         int right_F = (int) (right_forward*ROTATION_TICKS_PER_DEGREE);
         int right_R = (int) (right_rear*ROTATION_TICKS_PER_DEGREE);
 
-
         leftDriveF.setTargetPosition(left_F);
         leftDriveR.setTargetPosition(left_R);
         rightDriveF.setTargetPosition(right_F);
@@ -156,6 +154,11 @@ public class Auto extends LinearOpMode {
         ((DcMotorEx) rightDriveF).setVelocity(power);
         ((DcMotorEx) rightDriveR).setVelocity(power);
 
+        leftDriveF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftDriveR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDriveF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDriveR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         while (leftDriveF.isBusy())
         {
             telemetry.addLine("Sleep");
@@ -165,18 +168,9 @@ public class Auto extends LinearOpMode {
 
         telemetry.addLine("End of Sleep");
         telemetry.update();
-
-        leftDriveF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftDriveR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDriveF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDriveR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        leftDriveF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftDriveR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightDriveF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightDriveR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
+    /** @noinspection SameParameterValue*/
     private void Arm_handler(double Target_Position)
     {
         armMotor.setTargetPosition((int) Target_Position);
@@ -195,6 +189,7 @@ public class Auto extends LinearOpMode {
         }
     }
 
+    /** @noinspection SameParameterValue*/
     private void Tilt_servo_handler(double position)
     {
         tilt_left.setPosition(position);
@@ -228,11 +223,6 @@ public class Auto extends LinearOpMode {
         leftDriveR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightDriveF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightDriveR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        leftDriveF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftDriveR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightDriveF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightDriveR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         /* Setting zeroPowerBehavior to BRAKE enables a "brake mode". This causes the motor to slow down
         much faster when it is coasting. This creates a much more controllable drivetrain. As the robot
@@ -290,51 +280,51 @@ public class Auto extends LinearOpMode {
         if (opModeIsActive()) {
 
 
-            Move_Distance_cm(5, 5, 5, 5, 3000);
+            Move_Distance_cm(1200, 1200, 1200, 1200, 3000);
 
-            Move_Distance_cm(5, 5, 5, 5, 3000);
-
-            Arm_handler(ARM_COLLECT);
-            Tilt_servo_handler(COLLECTING_POSITION);
-            intake.setPower(INTAKE_COLLECT);
-
-            Move_Distance_cm(5, 5, 5, 5, 3000);
-
-            Arm_handler(ARM_SCORING_POS);
-
-            Move_Distance_cm(5, 5, 5, 5, 3000);
-
-            Move_Distance_cm(5, 5, 5, 5, 3000);  //rotation of robot without new method
-
-            Move_Distance_cm(5, 5, 5, 5, 3000);
-
-            Arm_handler(ARM_COLLECT);
-            intake.setPower(INTAKE_DEPOSIT);
-
-            Arm_handler(ARM_SCORING_POS);
-            intake.setPower(INTAKE_OFF);
-
-            Move_Distance_cm(5, 5, 5, 5, 3000);  //rotation of robot without new method
-
-            Move_Distance_cm(5, 5, 5, 5, 3000);
-
-            Arm_handler(ARM_COLLECT);
-            Tilt_servo_handler(COLLECTING_POSITION);
-            intake.setPower(INTAKE_COLLECT);
-
-            Move_Distance_cm(5, 5, 5, 5, 3000);
-
-            Arm_handler(ARM_SCORING_POS);
-
-            Move_Distance_cm(5, 5, 5, 5, 3000);  //rotation of robot without new method
-
-            Move_Distance_cm(5, 5, 5, 5, 3000);
-
-            Arm_handler(ARM_COLLECT);
-            intake.setPower(INTAKE_DEPOSIT);
-
-            Arm_handler(ARM_SCORING_POS);
-            intake.setPower(INTAKE_OFF);
+//            Move_Distance_cm(5, -5, -5, 5, 3000);
+//
+//            Arm_handler(ARM_COLLECT);
+//            Tilt_servo_handler(COLLECTING_POSITION);
+//            intake.setPower(INTAKE_COLLECT);
+//
+//            Move_Distance_cm(5, 5, 5, 5, 3000);
+//
+//            Arm_handler(ARM_SCORING_POS);
+//
+//            Move_Distance_cm(5, 5, 5, 5, 3000);
+//
+//            Move_Distance_cm(5, 5, -5, -5, 3000);  //rotation of robot without new method
+//
+//            Move_Distance_cm(5, 5, 5, 5, 3000);
+//
+//            Arm_handler(ARM_COLLECT);
+//            intake.setPower(INTAKE_DEPOSIT);
+//
+//            Arm_handler(ARM_SCORING_POS);
+//            intake.setPower(INTAKE_OFF);
+//
+//            Move_Distance_cm(5, 5, -5, -5, 3000);  //rotation of robot without new method
+//
+//            Move_Distance_cm(5, 5, 5, 5, 3000);
+//
+//            Arm_handler(ARM_COLLECT);
+//            Tilt_servo_handler(COLLECTING_POSITION);
+//            intake.setPower(INTAKE_COLLECT);
+//
+//            Move_Distance_cm(5, 5, 5, 5, 3000);
+//
+//            Arm_handler(ARM_SCORING_POS);
+//
+//            Move_Distance_cm(5, 5, -5, -5, 3000);  //rotation of robot without new method
+//
+//            Move_Distance_cm(5, 5, 5, 5, 3000);
+//
+//            Arm_handler(ARM_COLLECT);
+//            intake.setPower(INTAKE_DEPOSIT);
+//
+//            Arm_handler(ARM_SCORING_POS);
+//            intake.setPower(INTAKE_OFF);
 
 
             /* Here we handle the three buttons that have direct control of the intake speed.

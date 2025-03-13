@@ -386,7 +386,7 @@ public class main extends LinearOpMode {
                 extendPositionFudgeFactor -= 3*EXTEND_TICKS_PER_DEGREE;
             }
 
-            else if (gamepad1.dpad_up)
+            else if (gamepad1.left_bumper)
             {
                 /* This sets the arm to vertical to hook onto the LOW RUNG for hanging */
                 armPosition = ARM_SCORING_POS;
@@ -400,7 +400,7 @@ public class main extends LinearOpMode {
                 armPositionFudgeFactor = 0;
             }
 
-            else if (gamepad1.dpad_down)
+            else if (gamepad1.right_bumper)
             {
                 /* this moves the arm down to lift the robot up once it has been hooked */
                 armPosition = ARM_WINCH_ROBOT;
@@ -413,6 +413,15 @@ public class main extends LinearOpMode {
 
                 extendPositionFudgeFactor = 0;
                 armPositionFudgeFactor = 0;
+            }
+
+            if (gamepad1.y)
+            {
+                extendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            }
+            if (gamepad1.a)
+            {
+                armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }
 
             // adding extending functionality to the joysticks of gamepad2
