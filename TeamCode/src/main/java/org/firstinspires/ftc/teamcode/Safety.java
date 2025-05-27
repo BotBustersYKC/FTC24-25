@@ -402,7 +402,7 @@ public class Safety extends LinearOpMode {
                 extendPositionFudgeFactor -= 3*EXTEND_TICKS_PER_DEGREE;
             }
 
-            if (gamepad2.y)
+            if (gamepad1.b)
             {
                 stop = 1;
             }
@@ -445,28 +445,6 @@ public class Safety extends LinearOpMode {
                 armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }
 
-            for (VoltageSensor sensor: voltageSensors)
-            {
-                double reading = sensor.getVoltage();
-                if (reading > 0)
-                {
-                    voltage = Math.min(voltage, reading);
-                }
-            }
-            if (voltage < 10.5 || stop == 1)
-            {
-                stop = 1;
-                armPosition = ARM_COLLAPSED_INTO_ROBOT;
-                intake.setPower(INTAKE_OFF);
-//                tilt_left.setPosition(STARTING_CONFIG);
-//                tilt_right.setPosition(STARTING_CONFIG);
-                Tilt_servo_handler(STARTING_CONFIG);
-                wrist.setPosition(WRIST_FOLDED_OUT);
-                extendPosition = RETRACTED_ARM;
-
-                extendPositionFudgeFactor = 0;
-                armPositionFudgeFactor = 0;
-            }
 
 
             // adding extending functionality to the joysticks of gamepad2
@@ -515,6 +493,29 @@ public class Safety extends LinearOpMode {
             else if (read_pos >= 90)
             {
                 ((DcMotorEx) armMotor).setVelocity(800);
+            }
+
+            for (VoltageSensor sensor: voltageSensors)
+            {
+                double reading = sensor.getVoltage();
+                if (reading > 0)
+                {
+                    voltage = Math.min(voltage, reading);
+                }
+            }
+            if (voltage < 10.5 || stop == 1)
+            {
+                stop = 1;
+                armPosition = ARM_COLLAPSED_INTO_ROBOT;
+                intake.setPower(INTAKE_OFF);
+//                tilt_left.setPosition(STARTING_CONFIG);
+//                tilt_right.setPosition(STARTING_CONFIG);
+                Tilt_servo_handler(STARTING_CONFIG);
+                wrist.setPosition(WRIST_FOLDED_OUT);
+                extendPosition = RETRACTED_ARM;
+
+                extendPositionFudgeFactor = 0;
+                armPositionFudgeFactor = 0;
             }
 
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
