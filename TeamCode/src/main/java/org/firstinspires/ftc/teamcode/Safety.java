@@ -148,6 +148,17 @@ public class Safety extends LinearOpMode {
         telemetry.update();
         telemetry.clear();
     }
+    private void Extend_handler(double Target_Position)
+    {
+        extendMotor.setTargetPosition((int) Target_Position);
+        do
+        {
+            ((DcMotorEx) extendMotor).setVelocity(2100);
+
+            extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+        while (extendMotor.isBusy());
+    }
 
     @Override
     public void runOpMode() {
@@ -512,7 +523,7 @@ public class Safety extends LinearOpMode {
 //                tilt_right.setPosition(STARTING_CONFIG);
                 Tilt_servo_handler(STARTING_CONFIG);
                 wrist.setPosition(WRIST_FOLDED_OUT);
-                extendPosition = RETRACTED_ARM;
+                Extend_handler(RETRACTED_ARM);
 
                 extendPositionFudgeFactor = 0;
                 armPositionFudgeFactor = 0;
