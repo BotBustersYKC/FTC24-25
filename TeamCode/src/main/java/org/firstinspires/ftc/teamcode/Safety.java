@@ -160,6 +160,26 @@ public class Safety extends LinearOpMode {
         while (extendMotor.isBusy());
     }
 
+    private void Arm_handler(double Target_Position)
+    {
+        armMotor.setTargetPosition((int) Target_Position);
+        do
+        {
+            if ( armMotor.getCurrentPosition() < 90) {
+                read_pos = armMotor.getCurrentPosition() / ARM_TICKS_PER_DEGREE;
+                func = 1100 * cos(PI * read_pos / 90) + 1900;
+                ((DcMotorEx) armMotor).setVelocity(func);
+            }
+
+            if (armMotor.getCurrentPosition() >= 90) {
+                ((DcMotorEx) armMotor).setVelocity(800);
+            }
+            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+        while (armMotor.isBusy());
+    }
+
+
     @Override
     public void runOpMode() {
         /*
@@ -580,5 +600,12 @@ public class Safety extends LinearOpMode {
             }
 
         }
+        //starting config
+        Tilt_servo_handler(STARTING_CONFIG);
+        wrist.setPosition(WRIST_FOLDED_OUT);
+        Extend_handler(RETRACTED_ARM);
+        Arm_handler(ARM_COLLAPSED_INTO_ROBOT);
+        intake.setPower(INTAKE_OFF);
+
     }
 }
