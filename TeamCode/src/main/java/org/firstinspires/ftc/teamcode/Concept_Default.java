@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -46,7 +47,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 /** @noinspection ALL*/
 @TeleOp(name="og", group="Robot")
-//@Disabled
+@Disabled
 public class Concept_Default extends LinearOpMode {
 
     /* Declare OpMode members. */

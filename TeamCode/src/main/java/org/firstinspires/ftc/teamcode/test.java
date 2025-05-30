@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -10,6 +11,7 @@ import static java.lang.Math.cos;                 //less clutter to deal with on
 import static java.lang.Math.PI;
 
 @TeleOp(name="debug", group="Robot")
+@Disabled
 public class test extends LinearOpMode
 {
     public DcMotor leftDriveF  = null; //the left drivetrain motor
